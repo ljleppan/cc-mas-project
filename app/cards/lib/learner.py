@@ -1,52 +1,38 @@
 import numpy as np
 
 from cards.models import *
-from .ridge_regression import ridge_regression
-from .kernelized_ridge_regression import kernelized_ridge_regression
-from .kernelized_ridge_regression import predict as kernel_predict
+from sklearn.linear_model import RidgeCV
 
 def learn():
-
-    print("Getting myself an eduation")
+    print("Learning to evaluate card values")
 
     try:
         data = np.load("heathstonedata.npy")
-        print(".npy get!")
+        print("Loaded card data from cache")
     except Exception:
-        print("It's fucked, jim! Loading data from DB. This WILL take time")
+        print("Did not find cached data, reading from DB (This WILL take ~10 minutes)")
         data =  _data_as_numpy_array()
-        print("Saving to disk as .npy")
+        print("Loading complete, caching data")
         np.save("heathstonedata.npy", data)
-        print(".npy saved")
+        print("Caching complete")
 
     cards = data[:, 0]
 
     y = np.ascontiguousarray(data[:, 1], dtype=np.float)
     X = np.ascontiguousarray(data[:, 2:], dtype=np.float)
 
-    # print("Learning with kernels")
-    # cost_polynomial = _learn_polynomial(cards, X, y)
+    print("Learning coefficients using 5 times cross validated Lasso")
+    model = RidgeCV()
+    model.fit(X, y)
 
-    print("Learning the boring way")
-    cost_linear =_learn_linear(X, y)
+    print("Learning complete.")
+    print("\tAccuracy: {}".format(model.score(X, y)))
+    
+    coeffs = model.coef_
+    print(coeffs.shape)
+    _save_coefficients(coeffs)
 
-    print("All done")
-    return cost_linear
-    #return (cost_linear, cost_polynomial)
-
-def _learn_polynomial(cards, X, y):
-    cost, coeffs = kernelized_ridge_regression(X, y)
-
-    predictions = kernel_predict(X, coeffs)
-
-    for i in range(X.shape[0]):
-        cards[i].complex_value = predictions[i]
-        cards[i].save()
-
-    return cost
-
-def _learn_linear(X, y):
-    cost, coeffs = ridge_regression(X, y)
+def _save_coefficients(coeffs):
 
     MetaData.objects.filter(name="health_coeff").update(value=coeffs[0])
     MetaData.objects.filter(name="minion_attack_coeff").update(value=coeffs[1])
@@ -76,8 +62,6 @@ def _learn_linear(X, y):
         mechanic.value = coeffs[i]
         mechanic.save()
         i += 1
-
-    return cost
 
 def _data_as_numpy_array():
     data = []
