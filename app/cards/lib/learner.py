@@ -1,7 +1,7 @@
 import numpy as np
 
 from cards.models import *
-from sklearn.linear_model import RidgeCV
+from sklearn.linear_model import Ridge
 
 def learn():
     print("Learning to evaluate card values")
@@ -21,8 +21,8 @@ def learn():
     y = np.ascontiguousarray(data[:, 1], dtype=np.float)
     X = np.ascontiguousarray(data[:, 2:], dtype=np.float)
 
-    print("Learning coefficients using 5 times cross validated Lasso")
-    model = RidgeCV()
+    print("Learning coefficients.")
+    model = Ridge(alpha=0.00001)
     model.fit(X, y)
 
     print("Learning complete.")
