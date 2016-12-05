@@ -3,8 +3,16 @@ from random import randint, random
 from math import ceil
 
 from cards.models import *
+from cards.lib.creator_agent import *
 
 def generate_card(mana):
+    print("Test")
+    creator = Creator_agent()
+    card = creator.create_card()
+    print(card)
+    return card
+
+def generate_card_old(mana):
     budget = float(mana)
     budget -= CardType.objects.get(name="Minion").value
 
@@ -48,7 +56,9 @@ def generate_card(mana):
 
     card['value'] = -budget
     card['image'] = _get_image()
-
+    
+    print(card)
+    
     return card
 
 
