@@ -6,12 +6,11 @@ from cards.models import *
 MASHAPE_KEY = "ADD_KEY_HERE"
 
 def import_cards():
-        types = ['Minion', 'Spell', 'Weapon']
-        for card_type in types:
-            request =  "https://omgvamp-hearthstone-v1.p.mashape.com/cards/types/%s?collectible=1&mashape-key=%s" % (card_type, MASHAPE_KEY)
-            response = urllib.request.urlopen(request)
-            str_response = response.read().decode('utf-8')
-            _process_cards(json.loads(str_response))
+    for card_type in ["Minion", "Spell", "Weapon"]:
+        request =  "https://omgvamp-hearthstone-v1.p.mashape.com/cards/types/%s?collectible=1&mashape-key=%s" % (card_type, MASHAPE_KEY)
+        response = urllib.request.urlopen(request)
+        str_response = response.read().decode('utf-8')
+        _process_cards(json.loads(str_response))
 
 
 def _process_cards(data):
@@ -117,6 +116,9 @@ def _update_mechanics(card, db_card):
     text = text.replace('$', '')
     text = text.replace('#', '')
     text = text.replace('\n', ' ')
+    text = text.replace('\\n', ' ')
+    text = text.replace('_', ' ')
+    text = text.replace('@', ' ')
 
     # Jousting as a single mechanic
     text = text.replace('Reveal a minion in each deck.', 'Reveal a minion in each deck:')
@@ -129,6 +131,13 @@ def _update_mechanics(card, db_card):
 
     # Fix Dunemaul Shaman
     text = text.replace('Overload: (1) 50%', 'Overload: (1). 50%')
+
+    # Fix Jade Golem summoning cards
+    text = text.replace('a{1} {0} Jade Golem', 'a Jade Golem')
+
+    # Fix kazakus production
+    if "{0}" in text:
+        text = ""
 
     # Do simple mechanics separately since Blizz can't decide on a standard way
     simple_mechanics = [
