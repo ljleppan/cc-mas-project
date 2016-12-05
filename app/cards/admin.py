@@ -80,7 +80,8 @@ class CardAdmin(admin.ModelAdmin):
         (None, {
             'fields': [
                 'name',
-                'cardId'
+                'cardId',
+                'image'
             ]
         }),
         ("Meta", {
