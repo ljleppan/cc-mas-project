@@ -37,7 +37,6 @@ Display index page
 """
 def index(request):
     cards = Card.objects.all().order_by('?')[:4]
-    cards = cards.annotate(complex_delta=ExpressionWrapper(F('complex_value') - F('mana'), output_field=FloatField()))
     cards = cards.annotate(simple_delta=ExpressionWrapper(F('simple_value') - F('mana'), output_field=FloatField()))
 
     health_coeff = MetaData.objects.get(name="health_coeff")
@@ -72,7 +71,6 @@ def cards_index(request, card_type=None):
     else:
         raise Http404("No such card type")
 
-    cards = cards.annotate(complex_delta=ExpressionWrapper(F('complex_value') - F('mana'), output_field=FloatField()))
     cards = cards.annotate(simple_delta=ExpressionWrapper(F('simple_value') - F('mana'), output_field=FloatField()))
 
     return render(request, 'cards/index.html', {
@@ -90,7 +88,6 @@ def cards_show(request, id):
     if not card:
         raise Http404("No such card")
 
-    card = card.annotate(complex_delta=ExpressionWrapper(F('complex_value') - F('mana'), output_field=FloatField()))
     card = card.annotate(simple_delta=ExpressionWrapper(F('simple_value') - F('mana'), output_field=FloatField()))
     card = card[0]
 

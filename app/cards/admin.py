@@ -48,38 +48,28 @@ admin.site.register(Mechanic, MechanicAdmin)
 
 class CardAdmin(admin.ModelAdmin):
     search_fields = ['name']
-    list_display = ['name', 'complex_delta_round', 'simple_delta_round', 'complex_value_round', 'simple_value_round', 'mana', 'health', 'attack']
+    list_display = ['name', 'simple_delta_round', 'simple_value_round', 'mana', 'health', 'attack']
 
     def get_queryset(self, request):
         qs = super(CardAdmin, self).get_queryset(request)
-        qs = qs.annotate(complex_delta=ExpressionWrapper(F('complex_value') - F('mana'), output_field=FloatField()))
         qs = qs.annotate(simple_delta=ExpressionWrapper(F('simple_value') - F('mana'), output_field=FloatField()))
         return qs
-
-    def complex_delta_round(self, obj):
-        return round(obj.complex_delta, 1)
-    complex_delta_round.admin_order_field="complex_delta"
-    complex_delta_round.short_description="Value (Complex)"
 
     def simple_delta_round(self, obj):
         return round(obj.simple_delta, 1)
     simple_delta_round.admin_order_field="simple_delta"
-    simple_delta_round.short_description="Value (Simple)"
+    simple_delta_round.short_description="Value"
 
     def avg_delta_round(self, obj):
         return round(obj.avg_value, 1)
     avg_delta_round.admin_order_field="avg_delta"
     avg_delta_round.short_description="Value (avg)"
 
-    def complex_value_round(self, obj):
-        return round(obj.complex_value, 1)
-    complex_value_round.admin_order_field="complex_value"
-    complex_value_round.short_description="Expected Mana (Complex)"
 
     def simple_value_round(self, obj):
         return round(obj.simple_value, 1)
     simple_value_round.admin_order_field="simple_value"
-    simple_value_round.short_description="Expected Mana (Simple)"
+    simple_value_round.short_description="Expected Mana"
 
     fieldsets = [
         (None, {
