@@ -9,5 +9,5 @@ def generate_card(mana):
     creator = CardCreatorAgent()
     card = None
     while not card or card['mana'] != mana:
-        card = creator.create_card()
+        card = creator.act()
     return card

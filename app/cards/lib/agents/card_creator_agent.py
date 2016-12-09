@@ -8,9 +8,6 @@ from cards.models import *
 
 class CardCreatorAgent:
 
-    def __init__(self, inspiring_set):
-        self._inspiring_set = inspiring_set
-
     def _generate_card(self):
         card = {}
         card_val = 0
