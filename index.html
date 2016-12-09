@@ -41,7 +41,7 @@
 <ol>
 <li><p><strong>CardCreatorAgents</strong> create new Hearthstone cards based on an inspiring set of existing cards.</p></li>
 <li><p><strong>GatekeeperAgents</strong> ensure that the created cards are <em>fair</em> ("valuable") and <em>novel</em>. Fairness is evaluated using a regression model based on an inspiring set. Novelty is evaluated in terms of how similar the card is to other, previously seen cards.</p></li>
-<li><p><strong>DeckBuilderAgents</strong> build decks out of the cards accepted by GateKeeperAgents. At this point, their inner logic is very rudimentary, but we are working on more complex deck builder. We would like different deck builders to value f.ex. aggressive or defensive cards.</p></li>
+<li><p><strong>DeckBuilderAgents</strong> build decks (sets of 30 cards) out of the cards accepted by GateKeeperAgents. At this point, their inner logic is very rudimentary, but we are working on a more complex deck builder. We would like different deck builders to value f.ex. aggressive or defensive cards.</p></li>
 </ol>
 
 <h2>
@@ -93,7 +93,7 @@
 
 <p>Fetch project</p>
 
-<pre><code>ljleppan@hp8x-42:~$ git clone git@github.com:ljleppan/pure-rng-decks.git
+<pre><code>~$ git clone git@github.com:ljleppan/pure-rng-decks.git
 Cloning into 'pure-rng-decks'...
 remote: Counting objects: 237, done.
 remote: Compressing objects: 100% (170/170), done.
@@ -105,27 +105,27 @@ Checking connectivity... done.
 
 <p>Activate Virtual Environment</p>
 
-<pre><code>ljleppan@hp8x-42:~$ source venv/bin/activate
+<pre><code>~$ source venv/bin/activate
 </code></pre>
 
 <p>Switch to project root</p>
 
-<pre><code>(venv) ljleppan@hp8x-42:~$ cd pure-rng-decks/
+<pre><code>(venv) ~$ cd pure-rng-decks/
 </code></pre>
 
 <p>Install dependencies</p>
 
-<pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks$ pip install -r requirements.txt
+<pre><code>(venv) ~/pure-rng-decks$ pip install -r requirements.txt
 </code></pre>
 
 <p>Switch to app directory</p>
 
-<pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks$ cd app/
+<pre><code>(venv) ~/pure-rng-decks$ cd app/
 </code></pre>
 
 <p>Initialize database</p>
 
-<pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks/app$ python manage.py migrate
+<pre><code>(venv) ~/pure-rng-decks/app$ python manage.py migrate
 Operations to perform:
   Apply all migrations: admin, auth, cards, contenttypes, sessions
 Running migrations:
@@ -153,7 +153,7 @@ Running migrations:
 
 <p>Create a superuser account</p>
 
-<pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks/app$ python manage.py createsuperuser
+<pre><code>(venv) ~/pure-rng-decks/app$ python manage.py createsuperuser
 Username (leave blank to use 'ljleppan'):
 Email address:
 Password:
@@ -161,14 +161,14 @@ Password (again):
 Superuser created successfully.
 </code></pre>
 
-<p>Modify line 6 of <code>/cards/lib/importer.py</code> so that the variable <code>MASHAPE_KEY</code> contains a valid API key to the API at <a href="https://market.mashape.com/omgvamp/hearthstone">https://market.mashape.com/omgvamp/hearthstone</a>.</p>
+<p>Modify line 6 of <code>/cards/lib/importer.py</code> so that the variable <code>MASHAPE_KEY</code> contains a valid API key to the API at <a href="https://market.mashape.com/omgvamp/hearthstone">https://market.mashape.com/omgvamp/hearthstone</a>. See project Moodle page in Univ. Helsinki Moodle for an API key that can be used for temporary and light-weight testing.</p>
 
 <pre><code>MASHAPE_KEY = "ADD_KEY_HERE"
 </code></pre>
 
 <p>Start the server</p>
 
-<pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks/app$ python manage.py runserver
+<pre><code>(venv) ~/pure-rng-decks/app$ python manage.py runserver
 Performing system checks...
 
 System check identified no issues (0 silenced).
@@ -176,7 +176,6 @@ December 09, 2016 - 09:47:37
 Django version 1.10.3, using settings 'app.settings'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
-
 </code></pre>
 
 <p>Browse to http://localhost:8000/admin/ and log in</p>
