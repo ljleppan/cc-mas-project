@@ -9,18 +9,32 @@ from .models import *
 from .lib import importer, learner, card_generator
 
 
+"""
+View handling
+"""
+
+"""
+Populate database with cards from the online API
+"""
 @user_passes_test(lambda u: u.is_staff)
 @transaction.atomic
 def populate_db(request):
     importer.import_cards()
     return HttpResponse("Done!")
 
+
+"""
+Learn coefficients for card stats and mechanics
+"""
 @user_passes_test(lambda u: u.is_staff)
 @transaction.atomic
 def learn(request):
     learner.learn()
     return HttpResponse("Done!")
 
+"""
+Display index page
+"""
 def index(request):
     cards = Card.objects.all().order_by('?')[:4]
     cards = cards.annotate(complex_delta=ExpressionWrapper(F('complex_value') - F('mana'), output_field=FloatField()))
@@ -41,7 +55,9 @@ def index(request):
         'spell_coeff': CardType.objects.get(name="Spell").value,
     })
 
-# CARDS
+"""
+A listing of all cards of card_type, or all cards if card_type == None
+"""
 def cards_index(request, card_type=None):
     if card_type:
         if len(card_type) > 1:
@@ -64,6 +80,10 @@ def cards_index(request, card_type=None):
         'card_type': card_type
     })
 
+
+"""
+Individual card page
+"""
 def cards_show(request, id):
     card = Card.objects.filter(id=id)
 
@@ -80,7 +100,9 @@ def cards_show(request, id):
         'mechanics':mechanics
     })
 
-# MECHANICS
+"""
+List of all known mechanics
+"""
 def mechanics_index(request):
     mechanics = Mechanic.objects.all()
 
@@ -88,6 +110,9 @@ def mechanics_index(request):
         'mechanics': mechanics
     })
 
+"""
+Details of an individual mechanic
+"""
 def mechanics_show(request, id):
     mechanic = Mechanic.objects.get(id=id)
 
@@ -103,6 +128,9 @@ def mechanics_show(request, id):
         'is_numeric': is_numeric
     })
 
+"""
+Card creator demo
+"""
 def create_random_card(request):
     params = request.POST
 

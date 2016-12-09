@@ -2,6 +2,10 @@ from django.conf.urls import url
 
 from . import views
 
+"""
+URL patterns and maps to views for this application
+"""
+
 urlpatterns = [
     url(r'^$', views.index, name='index'),
 

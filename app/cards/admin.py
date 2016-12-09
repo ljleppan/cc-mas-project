@@ -2,6 +2,11 @@ from django.contrib import admin
 from django.db.models import ExpressionWrapper, F, FloatField
 from cards.models import *
 
+"""
+Configuration for the /admin view and its subviews
+"""
+
+
 # Register your models here.
 class MetaDataAdmin(admin.ModelAdmin):
     list_display = ['name', 'value']

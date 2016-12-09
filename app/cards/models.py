@@ -2,6 +2,10 @@ from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
+"""
+Define database models
+"""
+
 class MetaData(models.Model):
     name = models.CharField(max_length=32, unique=True)
     value = models.FloatField()
