@@ -85,7 +85,7 @@ class CardCreatorAgent:
         chosen = []
 
         for i in range(min(poisson(2), max_mechanics)):
-            mech = mechanics[random_integers(len(mechanics))]
+            mech = mechanics[random_integers(len(mechanics))-1]
 
             if "%d" in mech.name:
                 d = poisson(2)
@@ -116,9 +116,9 @@ class CardCreatorAgent:
             while len(chosen) < max_mechanics and abs(total_value - mana) > 0.2:
                 mech = None
                 if mana -total_value > 0:
-                    mech = mechanics_pos[random_integers(len(mechanics_pos))]
+                    mech = mechanics_pos[random_integers(len(mechanics_pos))-1]
                 else:
-                    mech = mechanics_neg[random_integers(len(mechanics_neg))]
+                    mech = mechanics_neg[random_integers(len(mechanics_neg))-1]
                 chosen.append((mech.name, mech.id))
                 total_value += mech.value
 
