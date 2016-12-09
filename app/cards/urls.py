@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'^mechanics/(?P<id>[0-9]+)$', views.mechanics_show, name='mechanics_show'),
 
     url(r'^create/$', views.create_random_card, name='create_random_card'),
+    url(r'^create/card$', views.create_random_card, name='create_random_card'),
+    url(r'^create/deck$', views.create_random_deck, name='create_random_deck'),
 
     url(r'^populate_db$', views.populate_db, name='populate_db'),
     url(r'^learn$', views.learn, name='learn'),

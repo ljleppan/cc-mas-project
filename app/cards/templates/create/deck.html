@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <header>
+      <h2 class="header">Generate a random deck</h2>
+    </header>
+    <div class="card-panel">
+      <form action="{% url 'create_random_deck'%}" method="POST">
+        {% csrf_token %}
+        <div class="row valign-wrapper">
+          <div class="col">
+            <p>
+              <input class="with-gap" id="deck_type_standard" type="radio" name="deck_type" value="standard" checked/>
+              <label for="deck_type_standard">Standard</label>
+            </p>
+            <p>
+              <input type="submit" class="waves-effect waves-light btn right" value="Create"></input>
+            </p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {% if deck %}
+    {% for card in deck %}
+      <div id="card-image-{{forloop.counter}}"></div>
+        <script>
+          $(document).ready( function () {
+            var image = new Image();
+            $('#card-image-{{forloop.counter}}').append(image);
+            var texture = new Image()
+            sunwell.createCard({
+            	"id": "{{card.image}}",
+            	"name": "{{card.name|safe}}",
+            	"text": "{% if card.mechanics %}{% for mechanic, id in card.mechanics %}{{mechanic|safe}}. {% endfor %}{% endif %}",
+            	"rarity": "{{card.rarity|upper}}",
+            	"type": "{{card.type|upper}}",
+              {% if card.race %}"race": "{{card.race}}",{%endif%}
+            	"cost": {{card.mana}},
+            	"attack": {{card.attack}},
+            	"health": {{card.health}},
+              "playerClass": "{{card.player_class|upper}}",
+              "texture": "{{card.image}}"
+            }, 400, image);
+
+              sunwell.init();
+          });
+        </script>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  {% load static %}
+  <script>
+    window.sunwell = {
+        settings: {
+            titleFont: 'Belwe',
+            bodyFont: 'ITC Franklin Condensed',
+            bodyFontSize: 36,
+            bodyLineHeight: 55,
+            bodyFontOffset: {x: 0, y:0},
+            assetFolder: "{% static 'sunwell/assets/' %}",
+            textureFolder: "{% static 'sunwell/artwork/' %}",
+            smallTextureFolder: "{% static 'sunwell/artwork/' %}",
+            autoInit: false,
+            idAsTexture: true
+        }
+    };
+  </script>
+
+  {% load static %}
+  <script src="{% static 'sunwell/sunwell.js' %}"></script>
+
+{% endblock %}

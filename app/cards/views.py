@@ -6,7 +6,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render
 
 from .models import *
-from .lib import importer, learner, card_generator
+from .lib import importer, learner, card_generator, deck_generator
 
 
 """
@@ -139,4 +139,16 @@ def create_random_card(request):
         mana = int(params.get('mana'))
         response['card'] = card_generator.generate_card(mana)
 
-    return render(request, 'create/index.html', response)
+    return render(request, 'create/card.html', response)
+
+"""
+Deck creator demo
+"""
+def create_random_deck(request):
+    response = {}
+
+    params = request.POST
+    if 'deck_type' in params:
+        response['deck'] = deck_generator.generate_deck(params.get('deck_type', 'standard'))
+
+    return render(request, 'create/deck.html', response)
