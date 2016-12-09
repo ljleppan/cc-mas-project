@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Pure-rng-decks : ">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Pure-rng-decks</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ljleppan/pure-rng-decks">View on GitHub</a>
+
+          <h1 id="project_title">Pure-rng-decks</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ljleppan/pure-rng-decks/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ljleppan/pure-rng-decks/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>This page will eventually contain the documentation for this project</p>
+
+<h1>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h1>
+
+<ol>
+<li> Fetch project</li>
+</ol>
+
+<pre><code>ljleppan@hp8x-42:~$ git clone git@github.com:ljleppan/pure-rng-decks.git
+Cloning into 'pure-rng-decks'...
+remote: Counting objects: 237, done.
+remote: Compressing objects: 100% (170/170), done.
+remote: Total 237 (delta 83), reused 212 (delta 59), pack-reused 0
+Receiving objects: 100% (237/237), 6.32 MiB | 2.92 MiB/s, done.
+Resolving deltas: 100% (83/83), done.
+Checking connectivity... done.
+</code></pre>
+
+<ol>
+<li>Activate Virtual Environment</li>
+</ol>
+
+<pre><code>ljleppan@hp8x-42:~$ source venv/bin/activate
+</code></pre>
+
+<ol>
+<li>Switch to project root</li>
+</ol>
+
+<pre><code>(venv) ljleppan@hp8x-42:~$ cd pure-rng-decks/
+</code></pre>
+
+<ol>
+<li>Install dependencies</li>
+</ol>
+
+<pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks$ pip install -r requirements.txt
+</code></pre>
+
+<ol>
+<li>Switch to app directory</li>
+</ol>
+
+<pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks$ cd app/
+</code></pre>
+
+<ol>
+<li>Initialize database</li>
+</ol>
+
+<pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks/app$ python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, cards, contenttypes, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying cards.0001_squashed_0004_auto_20160802_0827... OK
+  Applying cards.0002_auto_20160802_1410... OK
+  Applying cards.0003_card_simple_value... OK
+  Applying cards.0004_auto_20160802_1532... OK
+  Applying cards.0005_card_image... OK
+  Applying cards.0006_auto_20160807_1326... OK
+  Applying sessions.0001_initial... OK
+
+</code></pre>
+
+<ol>
+<li>Create a superuser account</li>
+</ol>
+
+<pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks/app$ python manage.py createsuperuser
+Username (leave blank to use 'ljleppan'):
+Email address:
+Password:
+Password (again):
+Superuser created successfully.
+</code></pre>
+
+<ol>
+<li>Modify line 6 of <code>/cards/lib/importer.py</code> so that the variable <code>MASHAPE_KEY</code> contains a valid API key to the API at <a href="https://market.mashape.com/omgvamp/hearthstone">https://market.mashape.com/omgvamp/hearthstone</a>.</li>
+</ol>
+
+<pre><code>MASHAPE_KEY = "ADD_KEY_HERE"
+</code></pre>
+
+<ol>
+<li>Start the server</li>
+</ol>
+
+<pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks/app$ python manage.py runserver
+Performing system checks...
+
+System check identified no issues (0 silenced).
+December 09, 2016 - 09:47:37
+Django version 1.10.3, using settings 'app.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+</code></pre>
+
+<ol>
+<li><p>Browse to http://localhost:8000/admin/ and log in</p></li>
+<li><p>Browse to http://localhost:8000/populate_db. Wait for the program to populate the database from the API. You know the process is complete when you see a page with the text "Done!".</p></li>
+</ol>
+
+<p>NB: If you get a HTTP Error 403: Forbidden, you either skipped step 9 or provided an incorrect API key.</p>
+
+<ol>
+<li>Browse to http://localhost:8000/admin/cards/card/ and verify that the database got populated.</li>
+</ol>
+
+<p>NB: The next step will take a long time, up to 15 minutes.</p>
+
+<ol>
+<li><p>Browse to http://localhost:8000/learn and wait for the page to return "Done!".</p></li>
+<li><p>You are done. To generate a deck, browse to http://localhost:8000/create for a demo of the individual card creation. </p></li>
+</ol>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Pure-rng-decks maintained by <a href="https://github.com/ljleppan">ljleppan</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
