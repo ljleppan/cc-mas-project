@@ -1,4 +1,5 @@
 import operator
+from random import choice
 
 class DeckCreatorAgent:
 
@@ -10,7 +11,10 @@ class DeckCreatorAgent:
         deck = []
         for _ in range(30):
             choices = [agent.act() for agent in self._gatekeepers]
-            choices = [(a, self._evaluator.evaluate(c)) for c in choices]
-            choices.sort(key=operator.itemgetter(1))
-            deck.append(choices[0][0])
+            if self._evaluator:
+                choices = [(c, self._evaluator.evaluate(c)) for c in choices]
+                choices.sort(key=operator.itemgetter(1))
+                deck.append(choices[0][0])
+            else:
+                deck.append(choice(choices))
         return deck

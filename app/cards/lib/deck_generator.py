@@ -3,8 +3,8 @@ from random import randint, random
 from math import ceil
 
 from cards.models import *
-from cards.lib.agents.card_creator_agent import CardCreatorAgent
+from cards.lib.agents.environment import Environment
 
 def generate_deck(style):
-    agent = CardCreatorAgent()
-    return [agent.act() for _ in range(30)]
+    env = Environment(5, 3, 1)
+    return env.step()

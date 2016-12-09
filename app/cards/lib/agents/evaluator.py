@@ -6,6 +6,4 @@ class Evaluator:
 
     # Not used currently
     def evaluate(self, card):
-
-
         return 0
