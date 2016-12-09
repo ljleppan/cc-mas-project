@@ -27,12 +27,12 @@ class Gatekeeper:
         if card.health < 1:
             return False
 
-        if (abs(card.simple_value) > 1):
+        if (abs(card.mana - card.simple_value) > 1):
             return False
 
         for mech in card.card_mechanics:
             if any(char.isdigit() for char in mech.name):
-                digits = [int(s) for s in re.findall(r'\b\d+\b', mech.name)]
+                digits = [int(s) for s in re.findall(r'\d+', mech.name)]
                 for digit in digits:
                     if digit < 1:
                         return False
