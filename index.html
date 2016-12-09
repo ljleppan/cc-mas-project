@@ -36,9 +36,7 @@
 <h1>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h1>
 
-<ol>
-<li> Fetch project</li>
-</ol>
+<p>Fetch project</p>
 
 <pre><code>ljleppan@hp8x-42:~$ git clone git@github.com:ljleppan/pure-rng-decks.git
 Cloning into 'pure-rng-decks'...
@@ -50,37 +48,27 @@ Resolving deltas: 100% (83/83), done.
 Checking connectivity... done.
 </code></pre>
 
-<ol>
-<li>Activate Virtual Environment</li>
-</ol>
+<p>Activate Virtual Environment</p>
 
 <pre><code>ljleppan@hp8x-42:~$ source venv/bin/activate
 </code></pre>
 
-<ol>
-<li>Switch to project root</li>
-</ol>
+<p>Switch to project root</p>
 
 <pre><code>(venv) ljleppan@hp8x-42:~$ cd pure-rng-decks/
 </code></pre>
 
-<ol>
-<li>Install dependencies</li>
-</ol>
+<p>Install dependencies</p>
 
 <pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks$ pip install -r requirements.txt
 </code></pre>
 
-<ol>
-<li>Switch to app directory</li>
-</ol>
+<p>Switch to app directory</p>
 
 <pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks$ cd app/
 </code></pre>
 
-<ol>
-<li>Initialize database</li>
-</ol>
+<p>Initialize database</p>
 
 <pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks/app$ python manage.py migrate
 Operations to perform:
@@ -108,9 +96,7 @@ Running migrations:
 
 </code></pre>
 
-<ol>
-<li>Create a superuser account</li>
-</ol>
+<p>Create a superuser account</p>
 
 <pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks/app$ python manage.py createsuperuser
 Username (leave blank to use 'ljleppan'):
@@ -120,16 +106,12 @@ Password (again):
 Superuser created successfully.
 </code></pre>
 
-<ol>
-<li>Modify line 6 of <code>/cards/lib/importer.py</code> so that the variable <code>MASHAPE_KEY</code> contains a valid API key to the API at <a href="https://market.mashape.com/omgvamp/hearthstone">https://market.mashape.com/omgvamp/hearthstone</a>.</li>
-</ol>
+<p>Modify line 6 of <code>/cards/lib/importer.py</code> so that the variable <code>MASHAPE_KEY</code> contains a valid API key to the API at <a href="https://market.mashape.com/omgvamp/hearthstone">https://market.mashape.com/omgvamp/hearthstone</a>.</p>
 
 <pre><code>MASHAPE_KEY = "ADD_KEY_HERE"
 </code></pre>
 
-<ol>
-<li>Start the server</li>
-</ol>
+<p>Start the server</p>
 
 <pre><code>(venv) ljleppan@hp8x-42:~/pure-rng-decks/app$ python manage.py runserver
 Performing system checks...
@@ -142,23 +124,19 @@ Quit the server with CONTROL-C.
 
 </code></pre>
 
-<ol>
-<li><p>Browse to http://localhost:8000/admin/ and log in</p></li>
-<li><p>Browse to http://localhost:8000/populate_db. Wait for the program to populate the database from the API. You know the process is complete when you see a page with the text "Done!".</p></li>
-</ol>
+<p>Browse to http://localhost:8000/admin/ and log in</p>
 
-<p>NB: If you get a HTTP Error 403: Forbidden, you either skipped step 9 or provided an incorrect API key.</p>
+<p>Browse to http://localhost:8000/populate_db. Wait for the program to populate the database from the API. You know the process is complete when you see a page with the text "Done!".</p>
 
-<ol>
-<li>Browse to http://localhost:8000/admin/cards/card/ and verify that the database got populated.</li>
-</ol>
+<p><strong>NB:</strong> If you get a HTTP Error 403: Forbidden, you either skipped step 9 or provided an incorrect API key.</p>
 
-<p>NB: The next step will take a long time, up to 15 minutes.</p>
+<p>Browse to http://localhost:8000/admin/cards/card/ and verify that the database got populated.</p>
 
-<ol>
-<li><p>Browse to http://localhost:8000/learn and wait for the page to return "Done!".</p></li>
-<li><p>You are done. To generate a deck, browse to http://localhost:8000/create for a demo of the individual card creation. </p></li>
-</ol>
+<p><strong>NB:</strong> The next step will take a long time, up to 15 minutes.</p>
+
+<p>Browse to http://localhost:8000/learn and wait for the page to return "Done!".</p>
+
+<p>You are done. To generate a deck, browse to http://localhost:8000/create for a demo of the individual card creation. </p>
       </section>
     </div>
 
