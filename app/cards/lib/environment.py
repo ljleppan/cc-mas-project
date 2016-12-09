@@ -6,8 +6,7 @@ class Environment:
     self.deck_creators = []
 
     def __init__(self):
-
+        ...
 
     def step(self):
         return [agent.act() for agent in deck_creators]
-            
