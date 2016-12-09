@@ -36,7 +36,11 @@ class Gatekeeper:
                     if digit < 1:
                         return False
 
-        #return self.evaluator.evaluate(card)
+        # Remove cards with duplicate mechanics
+        mechanics = [x[0] for x in card['mechanics']]
+        if len(mechanics) != len(set(mechanics)):
+            return False
+
         return True
 
     # Novelty:
