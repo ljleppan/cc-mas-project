@@ -31,7 +31,62 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>This page will eventually contain the documentation for this project</p>
+        <h1>
+<a id="project-overview" class="anchor" href="#project-overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project overview</h1>
+
+<p>Pure-RNG-Decks is a creative multiagent system that builds <a href="https://en.wikipedia.org/wiki/Hearthstone_(video_game)">Hearthstone</a> decks.</p>
+
+<p>Our system consists of three types of agents:</p>
+
+<ol>
+<li><p><strong>CardCreatorAgents</strong> create new Hearthstone cards based on an inspiring set of existing cards.</p></li>
+<li><p><strong>GatekeeperAgents</strong> ensure that the created cards are <em>fair</em> ("valuable") and <em>novel</em>. Fairness is evaluated using a regression model based on an inspiring set. Novelty is evaluated in terms of how similar the card is to other, previously seen cards.</p></li>
+<li><p><strong>DeckBuilderAgents</strong> build decks out of the cards accepted by GateKeeperAgents. At this point, their inner logic is very rudimentary, but we are working on more complex deck builder. We would like different deck builders to value f.ex. aggressive or defensive cards.</p></li>
+</ol>
+
+<h2>
+<a id="fair-cards" class="anchor" href="#fair-cards" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Fair Cards</h2>
+
+<p>The fairness of a Hearthstone card is not an easy subject: even the makers of the game have made some questionable decisions. As mentioned above, we use a regression model to ensure that the cards are fair. The following is a more detailed explanation of this model: We construct from real Heathstone cards a traning set, where the features are the known card mechanics and the card <em>stats</em> such as health and attack values. We then use ridge regression to fit a regression model that outputs the mana cost for a card given all the other features of that card as input. The idea here is simple: existing cards should be approximately fair, so their mana cost should approximate the combined "value" of their features. We can then use the coefficients learned from fitting this model to evaluate new, previously unseen cards. Such a previously unseen card can then be considered "fair" if its evaluated mana cost is within a reasonable range of the actual mana cost.</p>
+
+<h1>
+<a id="project-structure" class="anchor" href="#project-structure" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project structure</h1>
+
+<p>The project is built on top of the <a href="https://www.djangoproject.com/">Django web framework</a>. This allows us to use web pages as a user interface. Still, the project is not designed to be exposed to a larger audience as the computations are quite heavy: in other words, it's an <em>intranet-only web service</em>.</p>
+
+<p>The high-level structure is as follows:</p>
+
+<pre><code>. # Project root
+├── app
+│   ├── app/ # Server settings
+│   ├── cards
+│   │   ├── admin.py # Configuration for Admin UI
+│   │   ├── apps.py  # General configuration
+│   │   ├── lib
+│   │   │   ├── agents
+│   │   │   │   ├── card_creator_agent.py # Creates cards
+│   │   │   │   ├── deck_creator_agent.py # Creates decks
+│   │   │   │   ├── environment.py        # Contains all live agents
+│   │   │   │   ├── evaluator.py          # Helper for evaluating the fairness of cards
+│   │   │   │   └── gatekeeper_agent.py   # Ensures card fairness and novelty
+│   │   │   ├── card_generator.py  # Helper for web UI
+│   │   │   ├── deck_generator.py  # Helper for web UI
+│   │   │   ├── importer.py        # Fetches real card data
+│   │   │   └── learner.py         # Regression model
+│   │   └── ...
+│   ├── db.sqlite3           # Database
+│   ├── heathstonedata.npy   # Cache for learning data
+│   └── ...
+├── requirements.txt
+└── ...
+</code></pre>
+
+<p>See the .py files in /app/cards/lib/ for the classes specific to Hearthstone.</p>
+
+<h1>
+<a id="other-remarks" class="anchor" href="#other-remarks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Other remarks</h1>
+
+<p>We chose not to go with any existing multi-agent system frameworks, as in our view they bring unnecessary complexities while not being of great help. Notably, even asynchronous multiagent system frameworks are largely unable to allow for any concrete speedup due to the <a href="https://wiki.python.org/moin/GlobalInterpreterLock">Python GIL</a> only allowing one thread to execute at a time. </p>
 
 <h1>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h1>
@@ -136,7 +191,12 @@ Quit the server with CONTROL-C.
 
 <p>Browse to http://localhost:8000/learn and wait for the page to return "Done!".</p>
 
-<p>You are done. To generate a deck, browse to http://localhost:8000/create for a demo of the individual card creation. </p>
+<p>You are done. You can browse to http://localhost:8000/create/card for a demo of the individual card creation, or to http://localhost:8000/create/deck to try out the (Work-In-Progress) deck creator.</p>
+
+<h1>
+<a id="running-the-system" class="anchor" href="#running-the-system" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running the system</h1>
+
+<p>On subsequent times, it is enough to start the server using <code>python manage.py runserver</code>, and then browsing to http://localhost:8000</p>
       </section>
     </div>
 
