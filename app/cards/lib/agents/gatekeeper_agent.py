@@ -1,14 +1,16 @@
 import random
+from evaluator
 
 class Gatekeeper:
 
     self._memory = []
 
-    def __init__(self, card_generators):
+    def __init__(self, card_generators, n_insipiring_set):
         self._card_generators = card_generators
+        self.evaluator = Evaluator(n_insipiring_set)
 
     def is_fair(self, card):
-        return True
+        return self.evaluator.evaluate(card)
 
     def is_novel(self, card):
         return True
