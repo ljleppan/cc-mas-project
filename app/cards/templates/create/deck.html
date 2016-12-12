@@ -23,34 +23,41 @@
     </div>
   </div>
 
-  {% if deck %}
-    {% for card in deck %}
-      <div id="card-image-{{forloop.counter}}"></div>
-        <script>
-          $(document).ready( function () {
-            var image = new Image();
-            $('#card-image-{{forloop.counter}}').append(image);
-            var texture = new Image()
-            sunwell.createCard({
-            	"id": "{{card.image}}",
-            	"name": "{{card.name|safe}}",
-            	"text": "{% if card.mechanics %}{% for mechanic, id in card.mechanics %}{{mechanic|safe}}. {% endfor %}{% endif %}",
-            	"rarity": "{{card.rarity|upper}}",
-            	"type": "{{card.type|upper}}",
-              {% if card.race %}"race": "{{card.race}}",{%endif%}
-            	"cost": {{card.mana}},
-            	"attack": {{card.attack}},
-            	"health": {{card.health}},
-              "playerClass": "{{card.player_class|upper}}",
-              "texture": "{{card.image}}"
-            }, 400, image);
+  <div class="container">
+    {% if deck %}
+      <div class="row">
+        {% for card in deck %}
+          {% if forloop.counter0|divisibleby:2 %}
+            </div>
+            <div class="row">
+          {% endif %}
+          <div class="col s12 m6" id="card-image-{{forloop.counter}}"></div>
+            <script>
+              $(document).ready( function () {
+                var image = new Image();
+                $('#card-image-{{forloop.counter}}').append(image);
+                var texture = new Image()
+                sunwell.createCard({
+                	"id": "{{card.image}}",
+                	"name": "{{card.name|safe}}",
+                	"text": "{% if card.mechanics %}{% for mechanic, id, effect_size in card.mechanics %}{{mechanic|safe}}. {% endfor %}{% endif %}",
+                	"rarity": "{{card.rarity|upper}}",
+                	"type": "{{card.type|upper}}",
+                  {% if card.race %}"race": "{{card.race}}",{%endif%}
+                	"cost": {{card.mana}},
+                	"attack": {{card.attack}},
+                	"health": {{card.health}},
+                  "playerClass": "{{card.player_class|upper}}",
+                  "texture": "{{card.image}}"
+                }, 400, image);
 
-              sunwell.init();
-          });
-        </script>
+                  sunwell.init();
+              });
+            </script>
+        {% endfor %}
       </div>
-    {% endfor %}
-  {% endif %}
+    {% endif %}
+  </div> <!-- END CONTAINER -->
 
   {% load static %}
   <script>

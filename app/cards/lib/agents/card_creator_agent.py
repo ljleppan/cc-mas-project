@@ -7,52 +7,86 @@ from sklearn.linear_model import Ridge
 from cards.models import *
 
 class CardCreatorAgent:
-    
+
     def __init__(self, subset_size=100):
         self._load_card_subset(subset_size)
         self._learn_coeffs()
-    
+
     def _load_card_subset(self, subset_size):
-        
-        print("Learning to evaluate card values for a random subset of size" + str(subset_size))
+        print("CardCreator: Learning to evaluate card values for a random subset of size" + str(subset_size))
 
         try:
             data = np.load("heathstonedata.npy")
-            print("Loaded card data from cache")
+            print("CardCreator: Loaded card data from cache")
         except Exception:
-            print("Did not find cached data, reading from DB (This WILL take ~10 minutes)")
+            print("CardCreator: Did not find cached data, reading from DB (This WILL take ~10 minutes)")
             data =  _data_as_numpy_array()
-            print("Loading complete, caching data")
+            print("CardCreator: Loading complete, caching data")
             np.save("heathstonedata.npy", data)
-            print("Caching complete")
-        
-        
-        print(data[0])
+            print("CardCreator: Caching complete")
+
         sub_indices = np.random.choice(max(len(data), subset_size), subset_size)
-        
-        self.cards = np.ascontiguousarray(data[:, 1:][sub_indices], dtype=np.float)
-        
+
+        self._cards = np.ascontiguousarray(data[:, 1:][sub_indices], dtype=np.float)
+
+    def _memoize(self, card):
+        row = self._card_as_row(card)
+        random_index = randint(len(self._cards) - 1)
+
+        print("CardCreator: Replacing card at index {} with a new card".format(random_index))
+
+        self._cards[random_index] = row
+        self._cards = np.ascontiguousarray(self._cards, dtype=np.float)
+        self._learn_coeffs
+
+
+    def _card_as_row(self, card):
+        row = [
+            card['mana'],
+            card['health'],
+            card['attack'],
+            0,
+            0,
+        ]
+        for ctype in CardType.objects.all().order_by('id'):
+            if card['type'] == ctype.name:
+                row.append(1)
+            else:
+                row.append(0)
+
+        for race in Race.objects.all().order_by('id'):
+            if card['race'] == race.name:
+                row.append(1)
+            else:
+                row.append(0)
+
+        for mechanic in Mechanic.objects.all().order_by('id'):
+            for card_mechanic in card['mechanics']:
+                if card_mechanic[1] == mechanic.id:
+                    row.append(card_mechanic[2])
+                else:
+                    row.append(0)
+        return np.array(row)
+
+
     def _learn_coeffs(self):
+        y = np.ascontiguousarray(self._cards[:, 0], dtype=np.float)
+        X = np.ascontiguousarray(self._cards[:, 1:], dtype=np.float)
 
-        y = np.ascontiguousarray(self.cards[:, 0], dtype=np.float)
-        X = np.ascontiguousarray(self.cards[:, 1:], dtype=np.float)
-
-        print("Learning coefficients (creator agent).")
+        print("CardCreator: Learning")
         model = Ridge(alpha=0.00001)
         model.fit(X, y)
 
-        print("Learning complete.")
-        print("\tAccuracy: {}".format(model.score(X, y)))
-        
+        print("CardCreator: Learning complete with accuracy {}".format(model.score(X, y)))
+
         coeffs = model.coef_
-        print(coeffs.shape)
-        
+
         self.health_coeff = coeffs[0]
         self.attack_coeff = coeffs[1]
         #durability_coeff = coeffs[2]
         #weapon_attack_coeff =coeffs[3]
-        
-    
+
+
     def _generate_card(self):
         card = {}
         card_val = 0
@@ -71,6 +105,8 @@ class CardCreatorAgent:
         self._set_random_race(card)
         self._set_random_image(card)
         card['type'] = "Minion"
+
+        print("CardCreator: Created card {}".format(card))
         return card
 
     def act(self):
@@ -108,8 +144,6 @@ class CardCreatorAgent:
 
         :param dict card: card to set the rarity to
         '''
-        #r = list(Rarity.objects.all())
-        #print(r)
         diff = card["value"] - card["mana"]
 
         if diff < 0.1:
@@ -125,7 +159,6 @@ class CardCreatorAgent:
     def _generate_mechanics(self, card, max_mechanics=5):
         mechanics = list(Mechanic.objects.all().filter(cardmechanic__card__cardType__name__exact="Minion").order_by('value'))
 
-
         total_value = 0
         chosen = []
 
@@ -134,40 +167,11 @@ class CardCreatorAgent:
 
             if "%d" in mech.name:
                 d = poisson(2)
-                chosen.append((mech.name.replace("%d", str(d)), mech.id))
+                chosen.append((mech.name.replace("%d", str(d)), mech.id, d))
                 total_value += (mech.value * d)
             else:
-                chosen.append((mech.name, mech.id))
+                chosen.append((mech.name, mech.id, 1))
                 total_value += mech.value
-
-        print(chosen)
-
-        card['mechanics'] = chosen
-        return total_value
-
-    def _generate_mechanics_baaad(self, card, mana, max_mechanics=5):
-        mechanics = np.array(list(Mechanic.objects.all().filter(cardmechanic__card__cardType__name__exact="Minion").order_by('value')))
-        mechanics_values = np.array([mech.value for mech in mechanics])
-        mechanics_neg = mechanics[mechanics_values < 0.0]
-        mechanics_neu = mechanics[mechanics_values == 0.0]
-        mechanics_pos = mechanics[mechanics_values > 0.0]
-        print(len(mechanics_neg))
-        print(len(mechanics_neu))
-        print(len(mechanics_pos))
-        total_value = 0
-        chosen = []
-
-        if abs(mana) > 0.2:
-            while len(chosen) < max_mechanics and abs(total_value - mana) > 0.2:
-                mech = None
-                if mana -total_value > 0:
-                    mech = mechanics_pos[random_integers(len(mechanics_pos))-1]
-                else:
-                    mech = mechanics_neg[random_integers(len(mechanics_neg))-1]
-                chosen.append((mech.name, mech.id))
-                total_value += mech.value
-
-        print(chosen)
 
         card['mechanics'] = chosen
         return total_value
@@ -184,8 +188,8 @@ class CardCreatorAgent:
         '''
 
         #mana values for single attack and health points
-        health_val = self.health_coeff #MetaData.objects.get(name='health_coeff').value
-        attack_val = self.attack_coeff #MetaData.objects.get(name='minion_attack_coeff').value
+        health_val = self.health_coeff
+        attack_val = self.attack_coeff
         print("health val: " + str(health_val))
         print("attack val: " + str(attack_val))
 
@@ -195,8 +199,6 @@ class CardCreatorAgent:
 
         health_val_target = rnd * mana
         attack_val_target = (1 - rnd) * mana
-        #print(health_val_target)
-        #print(attack_val_target)
 
         card['health'] = int(round(health_val_target/health_val))
         card['attack'] = int(round(attack_val_target/attack_val))
