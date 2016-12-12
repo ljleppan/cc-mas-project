@@ -5,6 +5,7 @@ from scipy.stats import truncnorm
 from math import ceil
 from sklearn.linear_model import Ridge
 from cards.models import *
+from .learning_utils import card_as_row, data_as_numpy_array
 
 class CardCreatorAgent:
 
@@ -20,17 +21,16 @@ class CardCreatorAgent:
             print("CardCreator: Loaded card data from cache")
         except Exception:
             print("CardCreator: Did not find cached data, reading from DB (This WILL take ~10 minutes)")
-            data =  _data_as_numpy_array()
+            data =  data_as_numpy_array()
             print("CardCreator: Loading complete, caching data")
             np.save("heathstonedata.npy", data)
             print("CardCreator: Caching complete")
 
         sub_indices = np.random.choice(max(len(data), subset_size), subset_size)
-
         self._cards = np.ascontiguousarray(data[:, 1:][sub_indices], dtype=np.float)
 
     def _memoize(self, card):
-        row = self._card_as_row(card)
+        row = card_as_row(card)
         random_index = randint(len(self._cards) - 1)
 
         print("CardCreator: Replacing card at index {} with a new card".format(random_index))
@@ -38,36 +38,6 @@ class CardCreatorAgent:
         self._cards[random_index] = row
         self._cards = np.ascontiguousarray(self._cards, dtype=np.float)
         self._learn_coeffs
-
-
-    def _card_as_row(self, card):
-        row = [
-            card['mana'],
-            card['health'],
-            card['attack'],
-            0,
-            0,
-        ]
-        for ctype in CardType.objects.all().order_by('id'):
-            if card['type'] == ctype.name:
-                row.append(1)
-            else:
-                row.append(0)
-
-        for race in Race.objects.all().order_by('id'):
-            if card['race'] == race.name:
-                row.append(1)
-            else:
-                row.append(0)
-
-        for mechanic in Mechanic.objects.all().order_by('id'):
-            for card_mechanic in card['mechanics']:
-                if card_mechanic[1] == mechanic.id:
-                    row.append(card_mechanic[2])
-                else:
-                    row.append(0)
-        return np.array(row)
-
 
     def _learn_coeffs(self):
         y = np.ascontiguousarray(self._cards[:, 0], dtype=np.float)
