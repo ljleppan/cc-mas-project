@@ -81,18 +81,23 @@ class Gatekeeper:
 
         return True
 
-
     def is_novel(self, card):
         filtered = [k for k in self._memory.items if k['mana'] == card['mana']]
         filtered = [k for k in filtered if k['attack'] == card['attack']]
         filtered = [k for k in filtered if k['health'] == card['health']]
         if not filtered:
             return True
+
+        for k in filtered:
+            if (card['name'] == k['name']):
+                return False
+
         if card['mechanics']:
             for k in filtered:
                 if (k['mechanics'] and (set(k['mechanics']) == set(card['mechanics']))):
                     print("Gatekeeper: Discarding duplicate card")
                     return False
+
         return True
 
 
