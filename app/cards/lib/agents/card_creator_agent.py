@@ -3,11 +3,56 @@ import numpy as np
 from random import randint, random
 from scipy.stats import truncnorm
 from math import ceil
-
+from sklearn.linear_model import Ridge
 from cards.models import *
 
 class CardCreatorAgent:
+    
+    def __init__(self, subset_size=100):
+        self._load_card_subset(subset_size)
+        self._learn_coeffs()
+    
+    def _load_card_subset(self, subset_size):
+        
+        print("Learning to evaluate card values for a random subset of size" + str(subset_size))
 
+        try:
+            data = np.load("heathstonedata.npy")
+            print("Loaded card data from cache")
+        except Exception:
+            print("Did not find cached data, reading from DB (This WILL take ~10 minutes)")
+            data =  _data_as_numpy_array()
+            print("Loading complete, caching data")
+            np.save("heathstonedata.npy", data)
+            print("Caching complete")
+        
+        
+        print(data[0])
+        sub_indices = np.random.choice(max(len(data), subset_size), subset_size)
+        
+        self.cards = np.ascontiguousarray(data[:, 1:][sub_indices], dtype=np.float)
+        
+    def _learn_coeffs(self):
+
+        y = np.ascontiguousarray(self.cards[:, 0], dtype=np.float)
+        X = np.ascontiguousarray(self.cards[:, 1:], dtype=np.float)
+
+        print("Learning coefficients (creator agent).")
+        model = Ridge(alpha=0.00001)
+        model.fit(X, y)
+
+        print("Learning complete.")
+        print("\tAccuracy: {}".format(model.score(X, y)))
+        
+        coeffs = model.coef_
+        print(coeffs.shape)
+        
+        self.health_coeff = coeffs[0]
+        self.attack_coeff = coeffs[1]
+        #durability_coeff = coeffs[2]
+        #weapon_attack_coeff =coeffs[3]
+        
+    
     def _generate_card(self):
         card = {}
         card_val = 0
@@ -139,10 +184,10 @@ class CardCreatorAgent:
         '''
 
         #mana values for single attack and health points
-        health_val = MetaData.objects.get(name='health_coeff').value
-        attack_val = MetaData.objects.get(name='minion_attack_coeff').value
-        #print(health_val)
-        #print(attack_val)
+        health_val = self.health_coeff #MetaData.objects.get(name='health_coeff').value
+        attack_val = self.attack_coeff #MetaData.objects.get(name='minion_attack_coeff').value
+        print("health val: " + str(health_val))
+        print("attack val: " + str(attack_val))
 
         #random value between 0 and 1 using truncated normal distribution
         #with mean 0.5 and standard deviation 0.2
