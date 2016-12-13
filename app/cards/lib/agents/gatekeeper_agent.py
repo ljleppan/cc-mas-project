@@ -3,9 +3,9 @@ import re
 import numpy as np
 from sklearn.linear_model import Ridge
 from cards.models import *
-from .evaluator import Evaluator
-from .limited_memory import LimitedMemory
-from .learning_utils import data_as_numpy_array, card_as_row
+from cards.lib.agents.evaluator import Evaluator
+from cards.lib.agents.limited_memory import LimitedMemory
+from cards.lib.agents.learning_utils import data_as_numpy_array, card_as_row
 
 class Gatekeeper:
 

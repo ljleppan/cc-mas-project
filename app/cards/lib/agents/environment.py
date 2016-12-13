@@ -1,8 +1,8 @@
 from random import choice
 
-from .card_creator_agent import CardCreatorAgent
-from .gatekeeper_agent import Gatekeeper
-from .deck_creator_agent import DeckCreatorAgent
+from cards.lib.agents.card_creator_agent import CardCreatorAgent
+from cards.lib.agents.gatekeeper_agent import Gatekeeper
+from cards.lib.agents.deck_creator_agent import DeckCreatorAgent
 
 class Environment:
 

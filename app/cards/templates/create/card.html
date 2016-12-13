@@ -52,7 +52,7 @@
             sunwell.createCard({
             	"id": "{{card.image}}",
             	"name": "{{card.name|safe}}",
-            	"text": "{% if card.mechanics %}{% for mechanic, id in card.mechanics %}{{mechanic|safe}}. {% endfor %}{% endif %}",
+            	"text": "{% if card.mechanics %}{% for mechanic, id, effect_size in card.mechanics %}{{mechanic|safe}}. {% endfor %}{% endif %}",
             	"rarity": "{{card.rarity|upper}}",
             	"type": "{{card.type|upper}}",
               {% if card.race %}"race": "{{card.race}}",{%endif%}
@@ -92,7 +92,7 @@
         {% if card.mechanics %}
         <ul class="collection with-header card">
           <li class="collection-header"><h5>Mechanics</h5></li>
-          {% for mechanic, id in card.mechanics %}
+          {% for mechanic, id, effect_size in card.mechanics %}
             <li class="collection-item">
               <a href="{% url 'mechanics_show' id %}">{{mechanic|safe}}</a>
             </li>

@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cards.lib.agents.gatekeeper_agent &#8212; Pure RNG Decks 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cards.lib.agents.gatekeeper_agent</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">choice</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">Ridge</span>
+<span class="kn">from</span> <span class="nn">cards.models</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">cards.lib.agents.evaluator</span> <span class="k">import</span> <span class="n">Evaluator</span>
+<span class="kn">from</span> <span class="nn">cards.lib.agents.limited_memory</span> <span class="k">import</span> <span class="n">LimitedMemory</span>
+<span class="kn">from</span> <span class="nn">cards.lib.agents.learning_utils</span> <span class="k">import</span> <span class="n">data_as_numpy_array</span><span class="p">,</span> <span class="n">card_as_row</span>
+
+<div class="viewcode-block" id="Gatekeeper"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.gatekeeper_agent.Gatekeeper">[docs]</a><span class="k">class</span> <span class="nc">Gatekeeper</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Gatekeeper.__init__"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.gatekeeper_agent.Gatekeeper.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">card_generators</span><span class="p">,</span> <span class="n">subset_size</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="o">=</span> <span class="n">env</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memory</span> <span class="o">=</span> <span class="n">LimitedMemory</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_card_generators</span> <span class="o">=</span> <span class="n">card_generators</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_card_subset</span><span class="p">(</span><span class="n">subset_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_learn_coeffs</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_load_card_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subset_size</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Learning to evaluate card values for a random subset of size&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">subset_size</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;heathstonedata.npy&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Loaded card data from cache&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Did not find cached data, reading from DB (This WILL take ~10 minutes)&quot;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span>  <span class="n">data_as_numpy_array</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Loading complete, caching data&quot;</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;heathstonedata.npy&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Caching complete&quot;</span><span class="p">)</span>
+
+        <span class="n">sub_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">subset_size</span><span class="p">),</span> <span class="n">subset_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cards</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:][</span><span class="n">sub_indices</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_learn_coeffs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cards</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cards</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Learning coefficients (gatekeeper agent).&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">Ridge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Learning complete.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Accuracy: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)))</span>
+
+
+<div class="viewcode-block" id="Gatekeeper.is_fair"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.gatekeeper_agent.Gatekeeper.is_fair">[docs]</a>    <span class="k">def</span> <span class="nf">is_fair</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">card</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;mana&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding card with &lt; 0 mana&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;attack&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding card with &lt; 0 attack&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;health&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding card with &lt; 1 attack&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">mech</span> <span class="ow">in</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;mechanics&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">char</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">mech</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">digits</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">r&#39;\d+&#39;</span><span class="p">,</span> <span class="n">mech</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+                <span class="k">for</span> <span class="n">digit</span> <span class="ow">in</span> <span class="n">digits</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">digit</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding card with mechanic value &lt; 0&quot;</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Remove cards with duplicate mechanics</span>
+        <span class="n">mechanics</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;mechanics&#39;</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mechanics</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">mechanics</span><span class="p">)):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding card with duplicate mechanics&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">np_card</span> <span class="o">=</span> <span class="n">card_as_row</span><span class="p">(</span><span class="n">card</span><span class="p">)</span>
+        <span class="n">evaluation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np_card</span><span class="p">)</span>
+        <span class="n">value_delta</span> <span class="o">=</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;mana&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">evaluation</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: evaluated card as </span><span class="si">{}</span><span class="s2">. Delta: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">evaluation</span><span class="p">,</span> <span class="n">value_delta</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">value_delta</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Gatekeeper.is_novel"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.gatekeeper_agent.Gatekeeper.is_novel">[docs]</a>    <span class="k">def</span> <span class="nf">is_novel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">card</span><span class="p">):</span>
+        <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory</span><span class="o">.</span><span class="n">items</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;mana&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;mana&#39;</span><span class="p">]]</span>
+        <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">filtered</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;attack&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;attack&#39;</span><span class="p">]]</span>
+        <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">filtered</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;health&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;health&#39;</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filtered</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">filtered</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">card</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;mechanics&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">filtered</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;mechanics&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;mechanics&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">card</span><span class="p">[</span><span class="s1">&#39;mechanics&#39;</span><span class="p">]))):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding duplicate card&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="Gatekeeper.remember"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.gatekeeper_agent.Gatekeeper.remember">[docs]</a>    <span class="k">def</span> <span class="nf">remember</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">card</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">card</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">memoize</span><span class="p">(</span><span class="n">card</span><span class="p">)</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_card_generators</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Gatekeeper.act"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.gatekeeper_agent.Gatekeeper.act">[docs]</a>    <span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">artifacts</span><span class="p">:</span>
+            <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[</span><span class="n">agent</span><span class="o">.</span><span class="n">act</span><span class="p">()</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_card_generators</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: got </span><span class="si">{}</span><span class="s2"> cards from card creators&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)))</span>
+            <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_fair</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_novel</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: </span><span class="si">{}</span><span class="s2"> cards were novel and fair&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)))</span>
+            <span class="n">other_gatekeeper</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">gatekeepers</span><span class="p">)</span>
+            <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span> <span class="k">if</span> <span class="n">other_gatekeeper</span><span class="o">.</span><span class="n">is_fair</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">and</span> <span class="n">other_gatekeeper</span><span class="o">.</span><span class="n">is_novel</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: other gatekeeper agreed about </span><span class="si">{}</span><span class="s2"> cards&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)))</span>
+        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remember</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">choice</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Leo Leppänen, Juho Leinonen, Jouko Niinimäki, Keith Davis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
