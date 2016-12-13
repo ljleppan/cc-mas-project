@@ -11,7 +11,7 @@ Subpackages
 Submodules
 ----------
 
-cards.lib.view_helper module
+ViewHelper
 -------------------------------
 
 .. automodule:: cards.lib.view_helper
@@ -19,14 +19,14 @@ cards.lib.view_helper module
     :members:
     :undoc-members:
 
-cards.lib.importer module
+Importer
 -------------------------
 
 .. automodule:: cards.lib.importer
     :members:
     :undoc-members:
 
-cards.lib.learner module
+Learner
 ------------------------
 
 .. automodule:: cards.lib.learner

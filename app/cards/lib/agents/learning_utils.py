@@ -2,6 +2,12 @@ from cards.models import *
 import numpy as np
 
 def card_as_row(card):
+    """
+    Transforms a card (represented as a dict) to a corresponding numpy row matrix.
+
+    :param card: Card to transform to a numpy row matrix.
+    :return: The corresponding numpy row matrix.
+    """
     row = [
         card['health'],
         card['attack'],
@@ -37,6 +43,12 @@ def card_as_row(card):
     return np.array(row).reshape(1, -1)
 
 def data_as_numpy_array():
+    """
+    Transforms all cards in the local database into a numpy matrix. The
+    resulting matrix can then be cached on disk.
+
+    :return: A numpy matrix consisting of all the card data in the local database.
+    """
     data = []
     for card in Card.objects.all():
         item = [

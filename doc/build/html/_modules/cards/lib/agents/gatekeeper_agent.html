@@ -48,13 +48,27 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">Ridge</span>
 <span class="kn">from</span> <span class="nn">cards.models</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">cards.lib.agents.evaluator</span> <span class="k">import</span> <span class="n">Evaluator</span>
 <span class="kn">from</span> <span class="nn">cards.lib.agents.limited_memory</span> <span class="k">import</span> <span class="n">LimitedMemory</span>
 <span class="kn">from</span> <span class="nn">cards.lib.agents.learning_utils</span> <span class="k">import</span> <span class="n">data_as_numpy_array</span><span class="p">,</span> <span class="n">card_as_row</span>
 
 <div class="viewcode-block" id="Gatekeeper"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.gatekeeper_agent.Gatekeeper">[docs]</a><span class="k">class</span> <span class="nc">Gatekeeper</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A gatekeeper agent. Each :class:`.Gatekeeper` knows a certain set of :class:`.CardCreatorAgent`</span>
+<span class="sd">    instances. It can also talk to other :class:`.Gatekeeper` instances through :class:`.Environment`.</span>
+
+<span class="sd">    Each :class:`.Gatekeeper` has a static inspiring set of real cards it uses</span>
+<span class="sd">    to evalute the fairness of new cards, as well as a limited memory of previously</span>
+<span class="sd">    seen generated cards that it uses to evaluate novelty.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Gatekeeper.__init__"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.gatekeeper_agent.Gatekeeper.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">card_generators</span><span class="p">,</span> <span class="n">subset_size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new :class:`.Gatekeeper` agent.</span>
+
+<span class="sd">        :param env: The :class:`.Environment` this :class:`.Gatekeeper` lives in.</span>
+<span class="sd">        :param card_generators: A list of all :class:`.CardCreatorAgent` instances this :class:`.Gatekeeper` is associated with.</span>
+<span class="sd">        :param subset_size: The size of inspiring set this :class:`.Gatekeeper` has.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="o">=</span> <span class="n">env</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_memory</span> <span class="o">=</span> <span class="n">LimitedMemory</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_card_generators</span> <span class="o">=</span> <span class="n">card_generators</span>
@@ -91,6 +105,22 @@
 
 
 <div class="viewcode-block" id="Gatekeeper.is_fair"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.gatekeeper_agent.Gatekeeper.is_fair">[docs]</a>    <span class="k">def</span> <span class="nf">is_fair</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">card</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determines whether the inpur card is &quot;fair&quot; or not.</span>
+
+<span class="sd">        Fair cards have non-negative mana and attack value and a positive health.</span>
+
+<span class="sd">        Similarly, all mechanics with effect sizes (&quot;X&quot; in &quot;Deal X damage&quot;) must</span>
+<span class="sd">        have positive effect sizes, and no duplicate mechanics are allowed within</span>
+<span class="sd">        a single card.</span>
+
+<span class="sd">        Finally, card value (as estimated by a model fit on the inspiring set of</span>
+<span class="sd">        this :class:`.Gatekeeper`) must be within 1 of the card&#39;s mana cost.</span>
+
+<span class="sd">        :param card: Card to evaluate.</span>
+
+<span class="sd">        :return: `True` if card is fair, `False` otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;mana&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding card with &lt; 0 mana&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -108,7 +138,7 @@
                 <span class="n">digits</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">r&#39;\d+&#39;</span><span class="p">,</span> <span class="n">mech</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
                 <span class="k">for</span> <span class="n">digit</span> <span class="ow">in</span> <span class="n">digits</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">digit</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding card with mechanic value &lt; 0&quot;</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding card with mechanic value &lt; 1&quot;</span><span class="p">)</span>
                         <span class="k">return</span> <span class="kc">False</span>
 
         <span class="c1"># Remove cards with duplicate mechanics</span>
@@ -127,6 +157,17 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="Gatekeeper.is_novel"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.gatekeeper_agent.Gatekeeper.is_novel">[docs]</a>    <span class="k">def</span> <span class="nf">is_novel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">card</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determines whether an input card is novel.</span>
+
+<span class="sd">        A card is *not* novel if it shares a name with a memorized card, or it</span>
+<span class="sd">        has the exact same combination of mana, health, attack and mechanics as</span>
+<span class="sd">        another card in memory.</span>
+
+<span class="sd">        :param card: Card to evaluate.</span>
+
+<span class="sd">        :return: `True` if the card is novel, `False` otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory</span><span class="o">.</span><span class="n">items</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;mana&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;mana&#39;</span><span class="p">]]</span>
         <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">filtered</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;attack&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;attack&#39;</span><span class="p">]]</span>
         <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">filtered</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;health&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;health&#39;</span><span class="p">]]</span>
@@ -147,11 +188,33 @@
 
 
 <div class="viewcode-block" id="Gatekeeper.remember"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.gatekeeper_agent.Gatekeeper.remember">[docs]</a>    <span class="k">def</span> <span class="nf">remember</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">card</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a new card to the limited memory of this :class:`.Gatekeeper`. If the</span>
+<span class="sd">        memory is already full, the oldest card is purged from memory.</span>
+
+<span class="sd">        :param card: Card to memorize.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_memory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">card</span><span class="p">)</span>
         <span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">memoize</span><span class="p">(</span><span class="n">card</span><span class="p">)</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_card_generators</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Gatekeeper.act"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.gatekeeper_agent.Gatekeeper.act">[docs]</a>    <span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Act one &quot;round&quot; of the simulation.</span>
+
+<span class="sd">        The :class:`.Gatekeeper` asks each :class:`.CardCreatorAgent` to produce</span>
+<span class="sd">        a new card. Any non-novel and non-fair cards are discarded. For the remaining</span>
+<span class="sd">        cards, the opinion of one other :class:`.Gatekeeper` -- chosen randomly from</span>
+<span class="sd">        the :class:`.Environment` -- is asked on whether the cards indeed are both</span>
+<span class="sd">        fair and novel.</span>
+
+<span class="sd">        If both this and the other :class:`.Gatekeeper` agreed on any cards, this</span>
+<span class="sd">        :class:`.Gatekeeper` commits them all to memory and then randomly chooses</span>
+<span class="sd">        one winner.</span>
+
+<span class="sd">        The winner is then broadcasted to all other :class:`.Gatekeeper` instances</span>
+<span class="sd">        so that they, too, remember it for future novelty checks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="n">artifacts</span><span class="p">:</span>
             <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[</span><span class="n">agent</span><span class="o">.</span><span class="n">act</span><span class="p">()</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_card_generators</span><span class="p">]</span>
@@ -161,8 +224,17 @@
             <span class="n">other_gatekeeper</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">gatekeepers</span><span class="p">)</span>
             <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span> <span class="k">if</span> <span class="n">other_gatekeeper</span><span class="o">.</span><span class="n">is_fair</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">and</span> <span class="n">other_gatekeeper</span><span class="o">.</span><span class="n">is_novel</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: other gatekeeper agreed about </span><span class="si">{}</span><span class="s2"> cards&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)))</span>
-        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remember</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">choice</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span></div></div>
+
+        <span class="c1"># Remember all fair and novel candidates</span>
+        <span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">remember</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">)</span>
+
+        <span class="c1"># Select winner</span>
+        <span class="n">winner</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span>
+
+        <span class="c1"># Broadcast winner to all other gatekeepers</span>
+        <span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">remember</span><span class="p">(</span><span class="n">winner</span><span class="p">)</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">gatekeepers</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">winner</span></div></div>
 </pre></div>
 
           </div>

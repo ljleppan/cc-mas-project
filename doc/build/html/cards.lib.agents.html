@@ -45,7 +45,7 @@
   <div class="section" id="cards-lib-agents-package">
 <h1>cards.lib.agents package<a class="headerlink" href="#cards-lib-agents-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-cards.lib.agents.card_creator_agent">
-<span id="cards-lib-agents-card-creator-agent-module"></span><h2>cards.lib.agents.card_creator_agent module<a class="headerlink" href="#module-cards.lib.agents.card_creator_agent" title="Permalink to this headline">¶</a></h2>
+<span id="cardcreatoragent"></span><h2>CardCreatorAgent<a class="headerlink" href="#module-cards.lib.agents.card_creator_agent" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cards.lib.agents.card_creator_agent.CardCreatorAgent">
 <em class="property">class </em><code class="descclassname">cards.lib.agents.card_creator_agent.</code><code class="descname">CardCreatorAgent</code><span class="sig-paren">(</span><em>subset_size=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/card_creator_agent.html#CardCreatorAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.card_creator_agent.CardCreatorAgent" title="Permalink to this definition">¶</a></dt>
@@ -99,7 +99,7 @@ with 50 % chance on the card having no race.</p>
 
 </div>
 <div class="section" id="module-cards.lib.agents.deck_creator_agent">
-<span id="cards-lib-agents-deck-creator-agent-module"></span><h2>cards.lib.agents.deck_creator_agent module<a class="headerlink" href="#module-cards.lib.agents.deck_creator_agent" title="Permalink to this headline">¶</a></h2>
+<span id="deckcreatoragent"></span><h2>DeckCreatorAgent<a class="headerlink" href="#module-cards.lib.agents.deck_creator_agent" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cards.lib.agents.deck_creator_agent.DeckCreatorAgent">
 <em class="property">class </em><code class="descclassname">cards.lib.agents.deck_creator_agent.</code><code class="descname">DeckCreatorAgent</code><span class="sig-paren">(</span><em>gatekeepers</em>, <em>evaluator</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/deck_creator_agent.html#DeckCreatorAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.deck_creator_agent.DeckCreatorAgent" title="Permalink to this definition">¶</a></dt>
@@ -117,104 +117,229 @@ with 50 % chance on the card having no race.</p>
 
 </div>
 <div class="section" id="module-cards.lib.agents.environment">
-<span id="cards-lib-agents-environment-module"></span><h2>cards.lib.agents.environment module<a class="headerlink" href="#module-cards.lib.agents.environment" title="Permalink to this headline">¶</a></h2>
+<span id="environment"></span><h2>Environment<a class="headerlink" href="#module-cards.lib.agents.environment" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cards.lib.agents.environment.Environment">
 <em class="property">class </em><code class="descclassname">cards.lib.agents.environment.</code><code class="descname">Environment</code><span class="sig-paren">(</span><em>n_card_creators</em>, <em>n_gatekeepers</em>, <em>n_deck_creators</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/environment.html#Environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.environment.Environment" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Represents a collection of agents, working together to produce decks of
+cards.</p>
+<dl class="method">
 <dt id="cards.lib.agents.environment.Environment.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>n_card_creators</em>, <em>n_gatekeepers</em>, <em>n_deck_creators</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/environment.html#Environment.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.environment.Environment.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Creates a new <a class="reference internal" href="#cards.lib.agents.environment.Environment" title="cards.lib.agents.environment.Environment"><code class="xref py py-class docutils literal"><span class="pre">Environment</span></code></a> containing a set of agents.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>n_card_creators</strong> &#8211; Number of <a class="reference internal" href="#cards.lib.agents.card_creator_agent.CardCreatorAgent" title="cards.lib.agents.card_creator_agent.CardCreatorAgent"><code class="xref py py-class docutils literal"><span class="pre">CardCreatorAgent</span></code></a> each <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> is associated with.</li>
+<li><strong>n_gatekeepers</strong> &#8211; Number of <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> each <a class="reference internal" href="#cards.lib.agents.deck_creator_agent.DeckCreatorAgent" title="cards.lib.agents.deck_creator_agent.DeckCreatorAgent"><code class="xref py py-class docutils literal"><span class="pre">DeckCreatorAgent</span></code></a> is associated with.</li>
+<li><strong>n_deck_creators</strong> &#8211; Number of <a class="reference internal" href="#cards.lib.agents.deck_creator_agent.DeckCreatorAgent" title="cards.lib.agents.deck_creator_agent.DeckCreatorAgent"><code class="xref py py-class docutils literal"><span class="pre">DeckCreatorAgent</span></code></a> in this <a class="reference internal" href="#cards.lib.agents.environment.Environment" title="cards.lib.agents.environment.Environment"><code class="xref py py-class docutils literal"><span class="pre">Environment</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="cards.lib.agents.environment.Environment.card_creators">
 <code class="descname">card_creators</code><a class="headerlink" href="#cards.lib.agents.environment.Environment.card_creators" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of all <a class="reference internal" href="#cards.lib.agents.card_creator_agent.CardCreatorAgent" title="cards.lib.agents.card_creator_agent.CardCreatorAgent"><code class="xref py py-class docutils literal"><span class="pre">CardCreatorAgent</span></code></a> in this <a class="reference internal" href="#cards.lib.agents.environment.Environment" title="cards.lib.agents.environment.Environment"><code class="xref py py-class docutils literal"><span class="pre">Environment</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="cards.lib.agents.environment.Environment.deck_creators">
 <code class="descname">deck_creators</code><a class="headerlink" href="#cards.lib.agents.environment.Environment.deck_creators" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of all <a class="reference internal" href="#cards.lib.agents.deck_creator_agent.DeckCreatorAgent" title="cards.lib.agents.deck_creator_agent.DeckCreatorAgent"><code class="xref py py-class docutils literal"><span class="pre">DeckCreatorAgent</span></code></a> in this <a class="reference internal" href="#cards.lib.agents.environment.Environment" title="cards.lib.agents.environment.Environment"><code class="xref py py-class docutils literal"><span class="pre">Environment</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="cards.lib.agents.environment.Environment.gatekeepers">
 <code class="descname">gatekeepers</code><a class="headerlink" href="#cards.lib.agents.environment.Environment.gatekeepers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of all <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> in this <a class="reference internal" href="#cards.lib.agents.environment.Environment" title="cards.lib.agents.environment.Environment"><code class="xref py py-class docutils literal"><span class="pre">Environment</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="cards.lib.agents.environment.Environment.step">
 <code class="descname">step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/environment.html#Environment.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.environment.Environment.step" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<dd><p>Runs the simulation for one step, producing a new deck.</p>
+<p>The deck creator that finally produces the deck is at this point chosen
+randomly from among all the deck creators.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of 30 dicts, each dict presenting a card</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
-
-</div>
-<div class="section" id="module-cards.lib.agents.evaluator">
-<span id="cards-lib-agents-evaluator-module"></span><h2>cards.lib.agents.evaluator module<a class="headerlink" href="#module-cards.lib.agents.evaluator" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="cards.lib.agents.evaluator.Evaluator">
-<em class="property">class </em><code class="descclassname">cards.lib.agents.evaluator.</code><code class="descname">Evaluator</code><span class="sig-paren">(</span><em>n_inspiring_set</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/evaluator.html#Evaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.evaluator.Evaluator" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="cards.lib.agents.evaluator.Evaluator.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>n_inspiring_set</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/evaluator.html#Evaluator.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.evaluator.Evaluator.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="cards.lib.agents.evaluator.Evaluator.evaluate">
-<code class="descname">evaluate</code><span class="sig-paren">(</span><em>card</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/evaluator.html#Evaluator.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.evaluator.Evaluator.evaluate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="module-cards.lib.agents.gatekeeper_agent">
-<span id="cards-lib-agents-gatekeeper-agent-module"></span><h2>cards.lib.agents.gatekeeper_agent module<a class="headerlink" href="#module-cards.lib.agents.gatekeeper_agent" title="Permalink to this headline">¶</a></h2>
+<span id="gatekeeper"></span><h2>Gatekeeper<a class="headerlink" href="#module-cards.lib.agents.gatekeeper_agent" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cards.lib.agents.gatekeeper_agent.Gatekeeper">
 <em class="property">class </em><code class="descclassname">cards.lib.agents.gatekeeper_agent.</code><code class="descname">Gatekeeper</code><span class="sig-paren">(</span><em>env</em>, <em>card_generators</em>, <em>subset_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/gatekeeper_agent.html#Gatekeeper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>A gatekeeper agent. Each <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> knows a certain set of <a class="reference internal" href="#cards.lib.agents.card_creator_agent.CardCreatorAgent" title="cards.lib.agents.card_creator_agent.CardCreatorAgent"><code class="xref py py-class docutils literal"><span class="pre">CardCreatorAgent</span></code></a>
+instances. It can also talk to other <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> instances through <a class="reference internal" href="#cards.lib.agents.environment.Environment" title="cards.lib.agents.environment.Environment"><code class="xref py py-class docutils literal"><span class="pre">Environment</span></code></a>.</p>
+<p>Each <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> has a static inspiring set of real cards it uses
+to evalute the fairness of new cards, as well as a limited memory of previously
+seen generated cards that it uses to evaluate novelty.</p>
+<dl class="method">
 <dt id="cards.lib.agents.gatekeeper_agent.Gatekeeper.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>env</em>, <em>card_generators</em>, <em>subset_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/gatekeeper_agent.html#Gatekeeper.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Creates a new <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> agent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>env</strong> &#8211; The <a class="reference internal" href="#cards.lib.agents.environment.Environment" title="cards.lib.agents.environment.Environment"><code class="xref py py-class docutils literal"><span class="pre">Environment</span></code></a> this <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> lives in.</li>
+<li><strong>card_generators</strong> &#8211; A list of all <a class="reference internal" href="#cards.lib.agents.card_creator_agent.CardCreatorAgent" title="cards.lib.agents.card_creator_agent.CardCreatorAgent"><code class="xref py py-class docutils literal"><span class="pre">CardCreatorAgent</span></code></a> instances this <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> is associated with.</li>
+<li><strong>subset_size</strong> &#8211; The size of inspiring set this <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> has.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="cards.lib.agents.gatekeeper_agent.Gatekeeper.act">
 <code class="descname">act</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/gatekeeper_agent.html#Gatekeeper.act"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper.act" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Act one &#8220;round&#8221; of the simulation.</p>
+<p>The <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> asks each <a class="reference internal" href="#cards.lib.agents.card_creator_agent.CardCreatorAgent" title="cards.lib.agents.card_creator_agent.CardCreatorAgent"><code class="xref py py-class docutils literal"><span class="pre">CardCreatorAgent</span></code></a> to produce
+a new card. Any non-novel and non-fair cards are discarded. For the remaining
+cards, the opinion of one other <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> &#8211; chosen randomly from
+the <a class="reference internal" href="#cards.lib.agents.environment.Environment" title="cards.lib.agents.environment.Environment"><code class="xref py py-class docutils literal"><span class="pre">Environment</span></code></a> &#8211; is asked on whether the cards indeed are both
+fair and novel.</p>
+<p>If both this and the other <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> agreed on any cards, this
+<a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> commits them all to memory and then randomly chooses
+one winner.</p>
+<p>The winner is then broadcasted to all other <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a> instances
+so that they, too, remember it for future novelty checks.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="cards.lib.agents.gatekeeper_agent.Gatekeeper.is_fair">
 <code class="descname">is_fair</code><span class="sig-paren">(</span><em>card</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/gatekeeper_agent.html#Gatekeeper.is_fair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper.is_fair" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Determines whether the inpur card is &#8220;fair&#8221; or not.</p>
+<p>Fair cards have non-negative mana and attack value and a positive health.</p>
+<p>Similarly, all mechanics with effect sizes (&#8220;X&#8221; in &#8220;Deal X damage&#8221;) must
+have positive effect sizes, and no duplicate mechanics are allowed within
+a single card.</p>
+<p>Finally, card value (as estimated by a model fit on the inspiring set of
+this <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a>) must be within 1 of the card&#8217;s mana cost.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>card</strong> &#8211; Card to evaluate.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><cite>True</cite> if card is fair, <cite>False</cite> otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="cards.lib.agents.gatekeeper_agent.Gatekeeper.is_novel">
 <code class="descname">is_novel</code><span class="sig-paren">(</span><em>card</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/gatekeeper_agent.html#Gatekeeper.is_novel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper.is_novel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Determines whether an input card is novel.</p>
+<p>A card is <em>not</em> novel if it shares a name with a memorized card, or it
+has the exact same combination of mana, health, attack and mechanics as
+another card in memory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>card</strong> &#8211; Card to evaluate.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><cite>True</cite> if the card is novel, <cite>False</cite> otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="cards.lib.agents.gatekeeper_agent.Gatekeeper.remember">
 <code class="descname">remember</code><span class="sig-paren">(</span><em>card</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/gatekeeper_agent.html#Gatekeeper.remember"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper.remember" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Add a new card to the limited memory of this <a class="reference internal" href="#cards.lib.agents.gatekeeper_agent.Gatekeeper" title="cards.lib.agents.gatekeeper_agent.Gatekeeper"><code class="xref py py-class docutils literal"><span class="pre">Gatekeeper</span></code></a>. If the
+memory is already full, the oldest card is purged from memory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>card</strong> &#8211; Card to memorize.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="module-cards.lib.agents.learning_utils">
-<span id="cards-lib-agents-learning-utils-module"></span><h2>cards.lib.agents.learning_utils module<a class="headerlink" href="#module-cards.lib.agents.learning_utils" title="Permalink to this headline">¶</a></h2>
+<span id="learningutils"></span><h2>LearningUtils<a class="headerlink" href="#module-cards.lib.agents.learning_utils" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="cards.lib.agents.learning_utils.card_as_row">
 <code class="descclassname">cards.lib.agents.learning_utils.</code><code class="descname">card_as_row</code><span class="sig-paren">(</span><em>card</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/learning_utils.html#card_as_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.learning_utils.card_as_row" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Transforms a card (represented as a dict) to a corresponding numpy row matrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>card</strong> &#8211; Card to transform to a numpy row matrix.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The corresponding numpy row matrix.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cards.lib.agents.learning_utils.data_as_numpy_array">
 <code class="descclassname">cards.lib.agents.learning_utils.</code><code class="descname">data_as_numpy_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/learning_utils.html#data_as_numpy_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.learning_utils.data_as_numpy_array" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Transforms all cards in the local database into a numpy matrix. The
+resulting matrix can then be cached on disk.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A numpy matrix consisting of all the card data in the local database.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-cards.lib.agents.limited_memory">
-<span id="cards-lib-agents-limited-memory-module"></span><h2>cards.lib.agents.limited_memory module<a class="headerlink" href="#module-cards.lib.agents.limited_memory" title="Permalink to this headline">¶</a></h2>
+<span id="limitedmemory"></span><h2>LimitedMemory<a class="headerlink" href="#module-cards.lib.agents.limited_memory" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cards.lib.agents.limited_memory.LimitedMemory">
 <em class="property">class </em><code class="descclassname">cards.lib.agents.limited_memory.</code><code class="descname">LimitedMemory</code><span class="sig-paren">(</span><em>capacity</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/limited_memory.html#LimitedMemory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.limited_memory.LimitedMemory" title="Permalink to this definition">¶</a></dt>
@@ -222,22 +347,57 @@ with 50 % chance on the card having no race.</p>
 <dl class="method">
 <dt id="cards.lib.agents.limited_memory.LimitedMemory.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>capacity</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/limited_memory.html#LimitedMemory.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.limited_memory.LimitedMemory.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Creates a new <a class="reference internal" href="#cards.lib.agents.limited_memory.LimitedMemory" title="cards.lib.agents.limited_memory.LimitedMemory"><code class="xref py py-class docutils literal"><span class="pre">LimitedMemory</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>capacity</strong> &#8211; Number of items this <a class="reference internal" href="#cards.lib.agents.limited_memory.LimitedMemory" title="cards.lib.agents.limited_memory.LimitedMemory"><code class="xref py py-class docutils literal"><span class="pre">LimitedMemory</span></code></a> can hold.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="cards.lib.agents.limited_memory.LimitedMemory.append">
 <code class="descname">append</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cards/lib/agents/limited_memory.html#LimitedMemory.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cards.lib.agents.limited_memory.LimitedMemory.append" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Adds a new item to this <a class="reference internal" href="#cards.lib.agents.limited_memory.LimitedMemory" title="cards.lib.agents.limited_memory.LimitedMemory"><code class="xref py py-class docutils literal"><span class="pre">LimitedMemory</span></code></a>. If this <a class="reference internal" href="#cards.lib.agents.limited_memory.LimitedMemory" title="cards.lib.agents.limited_memory.LimitedMemory"><code class="xref py py-class docutils literal"><span class="pre">LimitedMemory</span></code></a>
+already contains <cite>capacity</cite> items, the oldest item is removed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>card</strong> &#8211; The item to add this this <a class="reference internal" href="#cards.lib.agents.limited_memory.LimitedMemory" title="cards.lib.agents.limited_memory.LimitedMemory"><code class="xref py py-class docutils literal"><span class="pre">LimitedMemory</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="cards.lib.agents.limited_memory.LimitedMemory.capacity">
 <code class="descname">capacity</code><a class="headerlink" href="#cards.lib.agents.limited_memory.LimitedMemory.capacity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The maximum capacity of this <a class="reference internal" href="#cards.lib.agents.limited_memory.LimitedMemory" title="cards.lib.agents.limited_memory.LimitedMemory"><code class="xref py py-class docutils literal"><span class="pre">LimitedMemory</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="cards.lib.agents.limited_memory.LimitedMemory.items">
 <code class="descname">items</code><a class="headerlink" href="#cards.lib.agents.limited_memory.LimitedMemory.items" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The items stores in this <a class="reference internal" href="#cards.lib.agents.limited_memory.LimitedMemory" title="cards.lib.agents.limited_memory.LimitedMemory"><code class="xref py py-class docutils literal"><span class="pre">LimitedMemory</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -253,13 +413,12 @@ with 50 % chance on the card having no race.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">cards.lib.agents package</a><ul>
-<li><a class="reference internal" href="#module-cards.lib.agents.card_creator_agent">cards.lib.agents.card_creator_agent module</a></li>
-<li><a class="reference internal" href="#module-cards.lib.agents.deck_creator_agent">cards.lib.agents.deck_creator_agent module</a></li>
-<li><a class="reference internal" href="#module-cards.lib.agents.environment">cards.lib.agents.environment module</a></li>
-<li><a class="reference internal" href="#module-cards.lib.agents.evaluator">cards.lib.agents.evaluator module</a></li>
-<li><a class="reference internal" href="#module-cards.lib.agents.gatekeeper_agent">cards.lib.agents.gatekeeper_agent module</a></li>
-<li><a class="reference internal" href="#module-cards.lib.agents.learning_utils">cards.lib.agents.learning_utils module</a></li>
-<li><a class="reference internal" href="#module-cards.lib.agents.limited_memory">cards.lib.agents.limited_memory module</a></li>
+<li><a class="reference internal" href="#module-cards.lib.agents.card_creator_agent">CardCreatorAgent</a></li>
+<li><a class="reference internal" href="#module-cards.lib.agents.deck_creator_agent">DeckCreatorAgent</a></li>
+<li><a class="reference internal" href="#module-cards.lib.agents.environment">Environment</a></li>
+<li><a class="reference internal" href="#module-cards.lib.agents.gatekeeper_agent">Gatekeeper</a></li>
+<li><a class="reference internal" href="#module-cards.lib.agents.learning_utils">LearningUtils</a></li>
+<li><a class="reference internal" href="#module-cards.lib.agents.limited_memory">LimitedMemory</a></li>
 </ul>
 </li>
 </ul>

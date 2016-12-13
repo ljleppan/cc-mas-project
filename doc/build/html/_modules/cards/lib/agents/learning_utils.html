@@ -47,6 +47,12 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="card_as_row"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.learning_utils.card_as_row">[docs]</a><span class="k">def</span> <span class="nf">card_as_row</span><span class="p">(</span><span class="n">card</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transforms a card (represented as a dict) to a corresponding numpy row matrix.</span>
+
+<span class="sd">    :param card: Card to transform to a numpy row matrix.</span>
+<span class="sd">    :return: The corresponding numpy row matrix.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">row</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">card</span><span class="p">[</span><span class="s1">&#39;health&#39;</span><span class="p">],</span>
         <span class="n">card</span><span class="p">[</span><span class="s1">&#39;attack&#39;</span><span class="p">],</span>
@@ -82,6 +88,12 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">row</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="data_as_numpy_array"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.learning_utils.data_as_numpy_array">[docs]</a><span class="k">def</span> <span class="nf">data_as_numpy_array</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transforms all cards in the local database into a numpy matrix. The</span>
+<span class="sd">    resulting matrix can then be cached on disk.</span>
+
+<span class="sd">    :return: A numpy matrix consisting of all the card data in the local database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">card</span> <span class="ow">in</span> <span class="n">Card</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
         <span class="n">item</span> <span class="o">=</span> <span class="p">[</span>

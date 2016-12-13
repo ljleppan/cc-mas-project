@@ -47,18 +47,31 @@
     <span class="sd">&#39;&#39;&#39;Simple LeastRecentlyAdded limited list, modified from the example used in the course.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 <div class="viewcode-block" id="LimitedMemory.__init__"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.limited_memory.LimitedMemory.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capacity</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new :class:`.LimitedMemory`.</span>
+
+<span class="sd">        :param capacity: Number of items this :class:`.LimitedMemory` can hold.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span> <span class="o">=</span> <span class="n">capacity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_items</span> <span class="o">=</span> <span class="p">[]</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">capacity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:return: The maximum capacity of this :class:`.LimitedMemory`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:return: The items stores in this :class:`.LimitedMemory`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span>
 
 <div class="viewcode-block" id="LimitedMemory.append"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.limited_memory.LimitedMemory.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a new item to this :class:`.LimitedMemory`. If this :class:`.LimitedMemory`</span>
+<span class="sd">        already contains `capacity` items, the oldest item is removed.</span>
+
+<span class="sd">        :param card: The item to add this this :class:`.LimitedMemory`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacity</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">capacity</span><span class="p">]</span></div></div>

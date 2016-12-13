@@ -50,8 +50,20 @@
 <span class="kn">from</span> <span class="nn">cards.lib.agents.deck_creator_agent</span> <span class="k">import</span> <span class="n">DeckCreatorAgent</span>
 
 <div class="viewcode-block" id="Environment"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.environment.Environment">[docs]</a><span class="k">class</span> <span class="nc">Environment</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a collection of agents, working together to produce decks of</span>
+<span class="sd">    cards.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Environment.__init__"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.environment.Environment.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_card_creators</span><span class="p">,</span> <span class="n">n_gatekeepers</span><span class="p">,</span> <span class="n">n_deck_creators</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new :class:`.Environment` containing a set of agents.</span>
+
+<span class="sd">        :param n_card_creators: Number of :class:`.CardCreatorAgent` each :class:`.Gatekeeper` is associated with.</span>
+<span class="sd">        :param n_gatekeepers: Number of :class:`.Gatekeeper` each :class:`.DeckCreatorAgent` is associated with.</span>
+<span class="sd">        :param n_deck_creators: Number of :class:`.DeckCreatorAgent` in this :class:`.Environment`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_card_creators</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gatekeepers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_deck_creators</span> <span class="o">=</span> <span class="p">[]</span>
@@ -68,17 +80,28 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">card_creators</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:return: List of all :class:`.CardCreatorAgent` in this :class:`.Environment`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_card_creators</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">gatekeepers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:return: List of all :class:`.Gatekeeper` in this :class:`.Environment`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gatekeepers</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">deck_creators</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:return: List of all :class:`.DeckCreatorAgent` in this :class:`.Environment`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck_creators</span>
 
 <div class="viewcode-block" id="Environment.step"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.environment.Environment.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs the simulation for one step, producing a new deck.</span>
+
+<span class="sd">        The deck creator that finally produces the deck is at this point chosen</span>
+<span class="sd">        randomly from among all the deck creators.</span>
+
+<span class="sd">        :return: A list of 30 dicts, each dict presenting a card</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_deck_creators</span><span class="p">)</span><span class="o">.</span><span class="n">act</span><span class="p">()</span></div></div>
 </pre></div>
 
