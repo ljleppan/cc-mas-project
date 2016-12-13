@@ -110,7 +110,11 @@ class Gatekeeper:
         artifacts = []
         while not artifacts:
             artifacts = [agent.act() for agent in self._card_generators]
+            print("Gatekeeper: got {} cards from card creators".format(len(artifacts)))
             artifacts = [a for a in artifacts if self.is_fair(a) and self.is_novel(a)]
+            print("Gatekeeper: {} cards were novel and fair".format(len(artifacts)))
             other_gatekeeper = choice(self._env.gatekeepers)
+            artifacts = [a for a in artifacts if other_gatekeeper.is_fair(a) and other_gatekeeper.is_novel(a)]
+            print("Gatekeeper: other gatekeeper agreed about {} cards".format(len(artifacts)))
         (self.remember(a) for a in artifacts)
         return choice(artifacts)
