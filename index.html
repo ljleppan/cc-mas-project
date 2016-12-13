@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to Pure RNG Decks’s documentation! &#8212; Pure RNG Decks 0.0.1 documentation</title>
+    <title>Project overview &#8212; Pure RNG Decks 0.0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -27,6 +27,7 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cards.lib.agents package" href="cards.lib.agents.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -42,18 +43,222 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="welcome-to-pure-rng-decks-s-documentation">
-<h1>Welcome to Pure RNG Decks&#8217;s documentation!<a class="headerlink" href="#welcome-to-pure-rng-decks-s-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+  <div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><a class="reference internal" href="#project-overview" id="id1">Project overview</a></li>
+<li><a class="reference internal" href="#fair-cards" id="id2">Fair Cards</a></li>
+<li><a class="reference internal" href="#project-structure" id="id3">Project structure</a></li>
+<li><a class="reference internal" href="#other-remarks" id="id4">Other remarks</a></li>
+<li><a class="reference internal" href="#installation" id="id5">Installation</a></li>
+<li><a class="reference internal" href="#code-documentation" id="id6">Code documentation</a></li>
 </ul>
+</div>
+<div class="section" id="project-overview">
+<h1><a class="toc-backref" href="#id1">Project overview</a><a class="headerlink" href="#project-overview" title="Permalink to this headline">¶</a></h1>
+<p>Pure-RNG-Decks is a creative multiagent system that builds
+<a class="reference external" href="https://en.wikipedia.org/wiki/Hearthstone_(video_game)">Hearthstone</a> decks.
+If you are not familiar with Hearthstone, we suggest you watch for example this
+short Youtube video:</p>
+<p>Our system consists of three types of agents:</p>
+<p>1. <strong>CardCreatorAgents</strong> create new Hearthstone cards based on an inspiring set
+of existing cards. These inspiring sets are transformed over time, as random
+elements from the sets are replaced by fair and novel generated cards.</p>
+<p>2. <strong>GatekeeperAgents</strong> ensure that the created cards are <em>fair</em> (&#8220;valuable&#8221;)
+and <em>novel</em>. Fairness is evaluated using a regression model based on an
+inspiring set. Novelty is evaluated in terms of how similar the card is to
+other, previously seen cards. For GatekeeperAgents, the inspiring set stays
+static, but they record previously seen generated cards in a mutable and limited
+memory.</p>
+<p>3. <strong>DeckBuilderAgents</strong> build decks (sets of 30 cards) out of the cards
+accepted by GateKeeperAgents. At this point, their inner logic is very
+rudimentary, but we are working on a more complex deck builder. We would like
+different deck builders to value f.ex. aggressive or defensive cards.</p>
+<p>We decided upon this three-tiered system in order to create a more social
+multiagent system, where agents need to co-operate to achieve their goals.</p>
+<p>While a two-tier system could have been employed instead of our current system,
+such two-tiered systems would make it more difficult to have different sized
+inspiring sets for different steps of the creative process. For example in our
+system the Gatekeepers have an inspiring sets that are double the size of the
+sets used by CardCreatorAgents. Similarly, Gatekeeper inspiring sets are static
+&#8211; with a distinct mutable memory &#8211; whereas CardCreatorAgents mutate their
+memory of their inspiring sets.</p>
+</div>
+<div class="section" id="fair-cards">
+<h1><a class="toc-backref" href="#id2">Fair Cards</a><a class="headerlink" href="#fair-cards" title="Permalink to this headline">¶</a></h1>
+<p>The fairness of a Hearthstone card is not an easy subject: even the makers of
+the game have made some questionable decisions. As mentioned above, we use a
+regression model to ensure that the cards are fair.</p>
+<p>The following is a more
+detailed explanation of this model: We construct from real Heathstone cards a
+training set, where the features are the known card mechanics and the card
+<em>stats</em> such as health and attack values. We then use ridge regression to fit a
+regression model that outputs the mana cost for a card given all the other
+features of that card as input. The idea here is simple: existing cards should
+be approximately fair, so their mana cost should approximate the combined
+&#8220;value&#8221; of their features. We can then use the coefficients learned from fitting
+this model to evaluate new, previously unseen cards. Such a previously unseen
+card can then be considered &#8220;fair&#8221; if its evaluated mana cost is within a
+reasonable range of the actual mana cost.</p>
+</div>
+<div class="section" id="project-structure">
+<h1><a class="toc-backref" href="#id3">Project structure</a><a class="headerlink" href="#project-structure" title="Permalink to this headline">¶</a></h1>
+<p>The project is built on top of the <a class="reference external" href="https://www.djangoproject.com/">Django web framework</a>.
+This allows us to use web pages as a user interface. Still, the project is not
+designed to be exposed to a larger audience as the computations are quite heavy:
+in other words, it&#8217;s an <em>intranet-only web service</em>.</p>
+<p>The high-level structure is as follows</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>. # Project root
+├── app
+│   ├── app/ # Server settings
+│   ├── cards
+│   │   ├── admin.py # Configuration for Admin UI
+│   │   ├── apps.py  # General configuration
+│   │   ├── lib
+│   │   │   ├── agents
+│   │   │   │   ├── card_creator_agent.py # Agent that creates cards
+│   │   │   │   ├── deck_creator_agent.py # Agent that creates decks
+│   │   │   │   ├── environment.py        # Environment agents live in
+│   │   │   │   ├── gatekeeper_agent.py   # Agent that evaluates cards
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── learning_utils.py
+│   │   │   │   └── limited_memory.py
+│   │   │   ├── importer.py      # For reading in data from the Mashape API
+│   │   │   ├── __init__.py
+│   │   │   ├── learner.py       # For learning card feature values
+│   │   │   └── view_helper.py   # Helper
+│   │   └── ...
+│   ├── db.sqlite3           # Database
+│   ├── heathstonedata.npy   # Cache for learning data
+│   └── ...
+├── requirements.txt
+└── ...
+</pre></div>
+</div>
+<p>See the .py files in /app/cards/lib/ for the classes specific to Hearthstone.</p>
+</div>
+<div class="section" id="other-remarks">
+<h1><a class="toc-backref" href="#id4">Other remarks</a><a class="headerlink" href="#other-remarks" title="Permalink to this headline">¶</a></h1>
+<p>We chose not to go with any existing multi-agent system frameworks, as in our
+view they bring unnecessary complexities while not being of great help. Notably,
+even asynchronous multiagent system frameworks are largely unable to allow for
+any concrete speedup due to the <a class="reference external" href="https://wiki.python.org/moin/GlobalInterpreterLock">Python GIL</a>
+only allowing one thread to execute at a time.</p>
+</div>
+<div class="section" id="installation">
+<h1><a class="toc-backref" href="#id5">Installation</a><a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>Fetch project</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>~$ git clone git@github.com:ljleppan/pure-rng-decks.git
+Cloning into &#39;pure-rng-decks&#39;...
+remote: Counting objects: 237, done.
+remote: Compressing objects: 100% (170/170), done.
+remote: Total 237 (delta 83), reused 212 (delta 59), pack-reused 0
+Receiving objects: 100% (237/237), 6.32 MiB | 2.92 MiB/s, done.
+Resolving deltas: 100% (83/83), done.
+Checking connectivity... done.
+</pre></div>
+</div>
+<p>Activate Virtual Environment</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>~$ source venv/bin/activate
+</pre></div>
+</div>
+<p>Switch to project root</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>(venv) ~$ cd pure-rng-decks/
+</pre></div>
+</div>
+<p>Install dependencies</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>(venv) ~/pure-rng-decks$ pip install -r requirements.txt
+</pre></div>
+</div>
+<p>Switch to app directory</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>(venv) ~/pure-rng-decks$ cd app/
+</pre></div>
+</div>
+<p>Initialize database</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>(venv) ~/pure-rng-decks/app$ python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, cards, contenttypes, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying cards.0001_squashed_0004_auto_20160802_0827... OK
+  Applying cards.0002_auto_20160802_1410... OK
+  Applying cards.0003_card_simple_value... OK
+  Applying cards.0004_auto_20160802_1532... OK
+  Applying cards.0005_card_image... OK
+  Applying cards.0006_auto_20160807_1326... OK
+  Applying sessions.0001_initial... OK
+</pre></div>
+</div>
+<p>Create a superuser account</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>(venv) ~/pure-rng-decks/app$ python manage.py createsuperuser
+Username (leave blank to use &#39;ljleppan&#39;):
+Email address:
+Password:
+Password (again):
+Superuser created successfully.
+</pre></div>
+</div>
+<p>Modify line 6 of <cite>/cards/lib/importer.py</cite> so that the variable <cite>MASHAPE_KEY</cite>
+contains a valid API key to the API at <a class="reference external" href="https://market.mashape.com/omgvamp/hearthstone">https://market.mashape.com/omgvamp/hearthstone</a>.
+See project Moodle page in Univ. Helsinki Moodle for an API key that can be used
+for temporary and light-weight testing.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">MASHAPE_KEY</span> <span class="o">=</span> <span class="s2">&quot;ADD_KEY_HERE&quot;</span>
+</pre></div>
+</div>
+<p>Start the server</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>(venv) ~/pure-rng-decks/app$ python manage.py runserver
+Performing system checks...
+
+System check identified no issues (0 silenced).
+December 09, 2016 - 09:47:37
+Django version 1.10.3, using settings &#39;app.settings&#39;
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+</pre></div>
+</div>
+<p>Browse to <a class="reference external" href="http://localhost:8000/admin/">http://localhost:8000/admin/</a> and log in</p>
+<p>Browse to <a class="reference external" href="http://localhost:8000/populate_db">http://localhost:8000/populate_db</a>. Wait for the program to populate
+the database from the API. You know the process is complete when you see a page
+with the text &#8220;Done!&#8221;.</p>
+<p><strong>NB:</strong> If you get a HTTP Error 403: Forbidden, you either skipped step 9 or
+provided an incorrect API key.</p>
+<p>Browse to <a class="reference external" href="http://localhost:8000/admin/cards/card/">http://localhost:8000/admin/cards/card/</a> and verify that the database
+got populated.</p>
+<p><strong>NB:</strong> The next step will take a long time, up to 15 minutes.</p>
+<p>Browse to <a class="reference external" href="http://localhost:8000/learn">http://localhost:8000/learn</a> and wait for the page to return &#8220;Done!&#8221;.</p>
+<p>You are done. You can browse to <a class="reference external" href="http://localhost:8000/create/card">http://localhost:8000/create/card</a> for a demo of
+the individual card creation, or to <a class="reference external" href="http://localhost:8000/create/deck">http://localhost:8000/create/deck</a> to try out
+the (Work-In-Progress) deck creator.</p>
+<p># Running the system</p>
+<p>On subsequent times, it is enough to start the server using <cite>python manage.py runserver</cite>,
+and then browsing to <a class="reference external" href="http://localhost:8000">http://localhost:8000</a></p>
+</div>
+<div class="section" id="code-documentation">
+<h1><a class="toc-backref" href="#id6">Code documentation</a><a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cards.lib.agents.html">cards.lib.agents package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cards.lib.agents.html#module-cards.lib.agents.card_creator_agent">CardCreatorAgent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cards.lib.agents.html#module-cards.lib.agents.deck_creator_agent">DeckCreatorAgent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cards.lib.agents.html#module-cards.lib.agents.environment">Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cards.lib.agents.html#module-cards.lib.agents.gatekeeper_agent">Gatekeeper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cards.lib.agents.html#module-cards.lib.agents.learning_utils">LearningUtils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cards.lib.agents.html#module-cards.lib.agents.limited_memory">LimitedMemory</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 
 
@@ -64,13 +269,18 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Welcome to Pure RNG Decks&#8217;s documentation!</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#">Project overview</a></li>
+<li><a class="reference internal" href="#fair-cards">Fair Cards</a></li>
+<li><a class="reference internal" href="#project-structure">Project structure</a></li>
+<li><a class="reference internal" href="#other-remarks">Other remarks</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#code-documentation">Code documentation</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="cards.lib.agents.html" title="next chapter">cards.lib.agents package</a></li>
   </ul></li>
 </ul>
 </div>
