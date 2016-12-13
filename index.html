@@ -1,213 +1,114 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Pure-rng-decks : ">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to Pure RNG Decks’s documentation! &#8212; Pure RNG Decks 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Pure-rng-decks</title>
   </head>
+  <body role="document">
+  
 
-  <body>
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-pure-rng-decks-s-documentation">
+<h1>Welcome to Pure RNG Decks&#8217;s documentation!<a class="headerlink" href="#welcome-to-pure-rng-decks-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/ljleppan/pure-rng-decks">View on GitHub</a>
 
-          <h1 id="project_title">Pure-rng-decks</h1>
-          <h2 id="project_tagline"></h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/ljleppan/pure-rng-decks/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/ljleppan/pure-rng-decks/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to Pure RNG Decks&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
     </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1>
-<a id="project-overview" class="anchor" href="#project-overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project overview</h1>
-
-<p>Pure-RNG-Decks is a creative multiagent system that builds <a href="https://en.wikipedia.org/wiki/Hearthstone_(video_game)">Hearthstone</a> decks.</p>
-
-<p>Our system consists of three types of agents:</p>
-
-<ol>
-<li><p><strong>CardCreatorAgents</strong> create new Hearthstone cards based on an inspiring set of existing cards.</p></li>
-<li><p><strong>GatekeeperAgents</strong> ensure that the created cards are <em>fair</em> ("valuable") and <em>novel</em>. Fairness is evaluated using a regression model based on an inspiring set. Novelty is evaluated in terms of how similar the card is to other, previously seen cards.</p></li>
-<li><p><strong>DeckBuilderAgents</strong> build decks (sets of 30 cards) out of the cards accepted by GateKeeperAgents. At this point, their inner logic is very rudimentary, but we are working on a more complex deck builder. We would like different deck builders to value f.ex. aggressive or defensive cards.</p></li>
-</ol>
-
-<h2>
-<a id="fair-cards" class="anchor" href="#fair-cards" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Fair Cards</h2>
-
-<p>The fairness of a Hearthstone card is not an easy subject: even the makers of the game have made some questionable decisions. As mentioned above, we use a regression model to ensure that the cards are fair. The following is a more detailed explanation of this model: We construct from real Heathstone cards a traning set, where the features are the known card mechanics and the card <em>stats</em> such as health and attack values. We then use ridge regression to fit a regression model that outputs the mana cost for a card given all the other features of that card as input. The idea here is simple: existing cards should be approximately fair, so their mana cost should approximate the combined "value" of their features. We can then use the coefficients learned from fitting this model to evaluate new, previously unseen cards. Such a previously unseen card can then be considered "fair" if its evaluated mana cost is within a reasonable range of the actual mana cost.</p>
-
-<h1>
-<a id="project-structure" class="anchor" href="#project-structure" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project structure</h1>
-
-<p>The project is built on top of the <a href="https://www.djangoproject.com/">Django web framework</a>. This allows us to use web pages as a user interface. Still, the project is not designed to be exposed to a larger audience as the computations are quite heavy: in other words, it's an <em>intranet-only web service</em>.</p>
-
-<p>The high-level structure is as follows:</p>
-
-<pre><code>. # Project root
-├── app
-│   ├── app/ # Server settings
-│   ├── cards
-│   │   ├── admin.py # Configuration for Admin UI
-│   │   ├── apps.py  # General configuration
-│   │   ├── lib
-│   │   │   ├── agents
-│   │   │   │   ├── card_creator_agent.py # Creates cards
-│   │   │   │   ├── deck_creator_agent.py # Creates decks
-│   │   │   │   ├── environment.py        # Contains all live agents
-│   │   │   │   ├── evaluator.py          # Helper for evaluating the fairness of cards
-│   │   │   │   └── gatekeeper_agent.py   # Ensures card fairness and novelty
-│   │   │   ├── card_generator.py  # Helper for web UI
-│   │   │   ├── deck_generator.py  # Helper for web UI
-│   │   │   ├── importer.py        # Fetches real card data
-│   │   │   └── learner.py         # Regression model
-│   │   └── ...
-│   ├── db.sqlite3           # Database
-│   ├── heathstonedata.npy   # Cache for learning data
-│   └── ...
-├── requirements.txt
-└── ...
-</code></pre>
-
-<p>See the .py files in /app/cards/lib/ for the classes specific to Hearthstone.</p>
-
-<h1>
-<a id="other-remarks" class="anchor" href="#other-remarks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Other remarks</h1>
-
-<p>We chose not to go with any existing multi-agent system frameworks, as in our view they bring unnecessary complexities while not being of great help. Notably, even asynchronous multiagent system frameworks are largely unable to allow for any concrete speedup due to the <a href="https://wiki.python.org/moin/GlobalInterpreterLock">Python GIL</a> only allowing one thread to execute at a time. </p>
-
-<h1>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h1>
-
-<p>Fetch project</p>
-
-<pre><code>~$ git clone git@github.com:ljleppan/pure-rng-decks.git
-Cloning into 'pure-rng-decks'...
-remote: Counting objects: 237, done.
-remote: Compressing objects: 100% (170/170), done.
-remote: Total 237 (delta 83), reused 212 (delta 59), pack-reused 0
-Receiving objects: 100% (237/237), 6.32 MiB | 2.92 MiB/s, done.
-Resolving deltas: 100% (83/83), done.
-Checking connectivity... done.
-</code></pre>
-
-<p>Activate Virtual Environment</p>
-
-<pre><code>~$ source venv/bin/activate
-</code></pre>
-
-<p>Switch to project root</p>
-
-<pre><code>(venv) ~$ cd pure-rng-decks/
-</code></pre>
-
-<p>Install dependencies</p>
-
-<pre><code>(venv) ~/pure-rng-decks$ pip install -r requirements.txt
-</code></pre>
-
-<p>Switch to app directory</p>
-
-<pre><code>(venv) ~/pure-rng-decks$ cd app/
-</code></pre>
-
-<p>Initialize database</p>
-
-<pre><code>(venv) ~/pure-rng-decks/app$ python manage.py migrate
-Operations to perform:
-  Apply all migrations: admin, auth, cards, contenttypes, sessions
-Running migrations:
-  Applying contenttypes.0001_initial... OK
-  Applying auth.0001_initial... OK
-  Applying admin.0001_initial... OK
-  Applying admin.0002_logentry_remove_auto_add... OK
-  Applying contenttypes.0002_remove_content_type_name... OK
-  Applying auth.0002_alter_permission_name_max_length... OK
-  Applying auth.0003_alter_user_email_max_length... OK
-  Applying auth.0004_alter_user_username_opts... OK
-  Applying auth.0005_alter_user_last_login_null... OK
-  Applying auth.0006_require_contenttypes_0002... OK
-  Applying auth.0007_alter_validators_add_error_messages... OK
-  Applying auth.0008_alter_user_username_max_length... OK
-  Applying cards.0001_squashed_0004_auto_20160802_0827... OK
-  Applying cards.0002_auto_20160802_1410... OK
-  Applying cards.0003_card_simple_value... OK
-  Applying cards.0004_auto_20160802_1532... OK
-  Applying cards.0005_card_image... OK
-  Applying cards.0006_auto_20160807_1326... OK
-  Applying sessions.0001_initial... OK
-
-</code></pre>
-
-<p>Create a superuser account</p>
-
-<pre><code>(venv) ~/pure-rng-decks/app$ python manage.py createsuperuser
-Username (leave blank to use 'ljleppan'):
-Email address:
-Password:
-Password (again):
-Superuser created successfully.
-</code></pre>
-
-<p>Modify line 6 of <code>/cards/lib/importer.py</code> so that the variable <code>MASHAPE_KEY</code> contains a valid API key to the API at <a href="https://market.mashape.com/omgvamp/hearthstone">https://market.mashape.com/omgvamp/hearthstone</a>. See project Moodle page in Univ. Helsinki Moodle for an API key that can be used for temporary and light-weight testing.</p>
-
-<pre><code>MASHAPE_KEY = "ADD_KEY_HERE"
-</code></pre>
-
-<p>Start the server</p>
-
-<pre><code>(venv) ~/pure-rng-decks/app$ python manage.py runserver
-Performing system checks...
-
-System check identified no issues (0 silenced).
-December 09, 2016 - 09:47:37
-Django version 1.10.3, using settings 'app.settings'
-Starting development server at http://127.0.0.1:8000/
-Quit the server with CONTROL-C.
-</code></pre>
-
-<p>Browse to http://localhost:8000/admin/ and log in</p>
-
-<p>Browse to http://localhost:8000/populate_db. Wait for the program to populate the database from the API. You know the process is complete when you see a page with the text "Done!".</p>
-
-<p><strong>NB:</strong> If you get a HTTP Error 403: Forbidden, you either skipped step 9 or provided an incorrect API key.</p>
-
-<p>Browse to http://localhost:8000/admin/cards/card/ and verify that the database got populated.</p>
-
-<p><strong>NB:</strong> The next step will take a long time, up to 15 minutes.</p>
-
-<p>Browse to http://localhost:8000/learn and wait for the page to return "Done!".</p>
-
-<p>You are done. You can browse to http://localhost:8000/create/card for a demo of the individual card creation, or to http://localhost:8000/create/deck to try out the (Work-In-Progress) deck creator.</p>
-
-<h1>
-<a id="running-the-system" class="anchor" href="#running-the-system" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running the system</h1>
-
-<p>On subsequent times, it is enough to start the server using <code>python manage.py runserver</code>, and then browsing to http://localhost:8000</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Pure-rng-decks maintained by <a href="https://github.com/ljleppan">ljleppan</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-      </footer>
+    <div class="footer">
+      &copy;2016, Leo Leppänen, Juho Leinonen, Jouko Niinimäki, Keith Davis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
     </div>
 
     
 
+    
   </body>
 </html>
