@@ -5,25 +5,66 @@
 Project overview
 ----------------
 
-Pure-RNG-Decks is a creative multiagent system that builds [Hearthstone](https://en.wikipedia.org/wiki/Hearthstone_(video_game)) decks.
+Pure-RNG-Decks is a creative multiagent system that builds
+`Hearthstone <https://en.wikipedia.org/wiki/Hearthstone_(video_game)>`_ decks.
+If you are not familiar with Hearthstone, we suggest you watch for example this
+short Youtube video:
 
 Our system consists of three types of agents:
 
-1. **CardCreatorAgents** create new Hearthstone cards based on an inspiring set of existing cards.
+1. **CardCreatorAgents** create new Hearthstone cards based on an inspiring set
+of existing cards. These inspiring sets are transformed over time, as random
+elements from the sets are replaced by fair and novel generated cards.
 
-2. **GatekeeperAgents** ensure that the created cards are *fair* ("valuable") and *novel*. Fairness is evaluated using a regression model based on an inspiring set. Novelty is evaluated in terms of how similar the card is to other, previously seen cards.
+2. **GatekeeperAgents** ensure that the created cards are *fair* ("valuable")
+and *novel*. Fairness is evaluated using a regression model based on an
+inspiring set. Novelty is evaluated in terms of how similar the card is to
+other, previously seen cards. For GatekeeperAgents, the inspiring set stays
+static, but they record previously seen generated cards in a mutable and limited
+memory.
 
-3. **DeckBuilderAgents** build decks (sets of 30 cards) out of the cards accepted by GateKeeperAgents. At this point, their inner logic is very rudimentary, but we are working on a more complex deck builder. We would like different deck builders to value f.ex. aggressive or defensive cards.
+3. **DeckBuilderAgents** build decks (sets of 30 cards) out of the cards
+accepted by GateKeeperAgents. At this point, their inner logic is very
+rudimentary, but we are working on a more complex deck builder. We would like
+different deck builders to value f.ex. aggressive or defensive cards.
+
+We decided upon this three-tiered system in order to create a more social
+multiagent system, where agents need to co-operate to achieve their goals.
+
+While a two-tier system could have been employed instead of our current system,
+such two-tiered systems would make it more difficult to have different sized
+inspiring sets for different steps of the creative process. For example in our
+system the Gatekeepers have an inspiring sets that are double the size of the
+sets used by CardCreatorAgents. Similarly, Gatekeeper inspiring sets are static
+-- with a distinct mutable memory -- whereas CardCreatorAgents mutate their
+memory of their inspiring sets.
 
 Fair Cards
 ----------
 
-The fairness of a Hearthstone card is not an easy subject: even the makers of the game have made some questionable decisions. As mentioned above, we use a regression model to ensure that the cards are fair. The following is a more detailed explanation of this model: We construct from real Heathstone cards a traning set, where the features are the known card mechanics and the card *stats* such as health and attack values. We then use ridge regression to fit a regression model that outputs the mana cost for a card given all the other features of that card as input. The idea here is simple: existing cards should be approximately fair, so their mana cost should approximate the combined "value" of their features. We can then use the coefficients learned from fitting this model to evaluate new, previously unseen cards. Such a previously unseen card can then be considered "fair" if its evaluated mana cost is within a reasonable range of the actual mana cost.
+The fairness of a Hearthstone card is not an easy subject: even the makers of
+the game have made some questionable decisions. As mentioned above, we use a
+regression model to ensure that the cards are fair.
+
+The following is a more
+detailed explanation of this model: We construct from real Heathstone cards a
+training set, where the features are the known card mechanics and the card
+*stats* such as health and attack values. We then use ridge regression to fit a
+regression model that outputs the mana cost for a card given all the other
+features of that card as input. The idea here is simple: existing cards should
+be approximately fair, so their mana cost should approximate the combined
+"value" of their features. We can then use the coefficients learned from fitting
+this model to evaluate new, previously unseen cards. Such a previously unseen
+card can then be considered "fair" if its evaluated mana cost is within a
+reasonable range of the actual mana cost.
 
 Project structure
 -----------------
 
-The project is built on top of the [Django web framework](https://www.djangoproject.com/). This allows us to use web pages as a user interface. Still, the project is not designed to be exposed to a larger audience as the computations are quite heavy: in other words, it's an *intranet-only web service*.
+The project is built on top of the `Django web framework <https://www.djangoproject.com/>`_.
+This allows us to use web pages as a user interface. Still, the project is not
+designed to be exposed to a larger audience as the computations are quite heavy:
+in other words, it's an *intranet-only web service*.
 
 The high-level structure is as follows
 
@@ -37,15 +78,17 @@ The high-level structure is as follows
   │   │   ├── apps.py  # General configuration
   │   │   ├── lib
   │   │   │   ├── agents
-  │   │   │   │   ├── card_creator_agent.py # Creates cards
-  │   │   │   │   ├── deck_creator_agent.py # Creates decks
-  │   │   │   │   ├── environment.py        # Contains all live agents
-  │   │   │   │   ├── evaluator.py          # Helper for evaluating the fairness of cards
-  │   │   │   │   └── gatekeeper_agent.py   # Ensures card fairness and novelty
-  │   │   │   ├── card_generator.py  # Helper for web UI
-  │   │   │   ├── deck_generator.py  # Helper for web UI
-  │   │   │   ├── importer.py        # Fetches real card data
-  │   │   │   └── learner.py         # Regression model
+  │   │   │   │   ├── card_creator_agent.py # Agent that creates cards
+  │   │   │   │   ├── deck_creator_agent.py # Agent that creates decks
+  │   │   │   │   ├── environment.py        # Environment agents live in
+  │   │   │   │   ├── gatekeeper_agent.py   # Agent that evaluates cards
+  │   │   │   │   ├── __init__.py
+  │   │   │   │   ├── learning_utils.py
+  │   │   │   │   └── limited_memory.py
+  │   │   │   ├── importer.py      # For reading in data from the Mashape API
+  │   │   │   ├── __init__.py
+  │   │   │   ├── learner.py       # For learning card feature values
+  │   │   │   └── view_helper.py   # Helper
   │   │   └── ...
   │   ├── db.sqlite3           # Database
   │   ├── heathstonedata.npy   # Cache for learning data
@@ -58,7 +101,11 @@ See the .py files in /app/cards/lib/ for the classes specific to Hearthstone.
 Other remarks
 -------------
 
-We chose not to go with any existing multi-agent system frameworks, as in our view they bring unnecessary complexities while not being of great help. Notably, even asynchronous multiagent system frameworks are largely unable to allow for any concrete speedup due to the [Python GIL](https://wiki.python.org/moin/GlobalInterpreterLock) only allowing one thread to execute at a time.
+We chose not to go with any existing multi-agent system frameworks, as in our
+view they bring unnecessary complexities while not being of great help. Notably,
+even asynchronous multiagent system frameworks are largely unable to allow for
+any concrete speedup due to the `Python GIL <https://wiki.python.org/moin/GlobalInterpreterLock>`_
+only allowing one thread to execute at a time.
 
 Installation
 ------------
@@ -142,7 +189,10 @@ Create a superuser account
   Password (again):
   Superuser created successfully.
 
-Modify line 6 of `/cards/lib/importer.py` so that the variable `MASHAPE_KEY` contains a valid API key to the API at https://market.mashape.com/omgvamp/hearthstone. See project Moodle page in Univ. Helsinki Moodle for an API key that can be used for temporary and light-weight testing.
+Modify line 6 of `/cards/lib/importer.py` so that the variable `MASHAPE_KEY`
+contains a valid API key to the API at https://market.mashape.com/omgvamp/hearthstone.
+See project Moodle page in Univ. Helsinki Moodle for an API key that can be used
+for temporary and light-weight testing.
 
 ::
 
@@ -164,20 +214,27 @@ Start the server
 
 Browse to http://localhost:8000/admin/ and log in
 
-Browse to http://localhost:8000/populate_db. Wait for the program to populate the database from the API. You know the process is complete when you see a page with the text "Done!".
+Browse to http://localhost:8000/populate_db. Wait for the program to populate
+the database from the API. You know the process is complete when you see a page
+with the text "Done!".
 
-**NB:** If you get a HTTP Error 403: Forbidden, you either skipped step 9 or provided an incorrect API key.
+**NB:** If you get a HTTP Error 403: Forbidden, you either skipped step 9 or
+provided an incorrect API key.
 
-Browse to http://localhost:8000/admin/cards/card/ and verify that the database got populated.
+Browse to http://localhost:8000/admin/cards/card/ and verify that the database
+got populated.
 
 **NB:** The next step will take a long time, up to 15 minutes.
 
 Browse to http://localhost:8000/learn and wait for the page to return "Done!".
 
-You are done. You can browse to http://localhost:8000/create/card for a demo of the individual card creation, or to http://localhost:8000/create/deck to try out the (Work-In-Progress) deck creator.
+You are done. You can browse to http://localhost:8000/create/card for a demo of
+the individual card creation, or to http://localhost:8000/create/deck to try out
+the (Work-In-Progress) deck creator.
 
 # Running the system
 
-On subsequent times, it is enough to start the server using `python manage.py runserver`, and then browsing to http://localhost:8000
+On subsequent times, it is enough to start the server using `python manage.py runserver`,
+and then browsing to http://localhost:8000
 
 .. include:: modules.rst

@@ -56,21 +56,57 @@
 </div>
 <div class="section" id="project-overview">
 <h1><a class="toc-backref" href="#id1">Project overview</a><a class="headerlink" href="#project-overview" title="Permalink to this headline">¶</a></h1>
-<p>Pure-RNG-Decks is a creative multiagent system that builds [Hearthstone](<a class="reference external" href="https://en.wikipedia.org/wiki/Hearthstone_(video_game">https://en.wikipedia.org/wiki/Hearthstone_(video_game</a>)) decks.</p>
+<p>Pure-RNG-Decks is a creative multiagent system that builds
+<a class="reference external" href="https://en.wikipedia.org/wiki/Hearthstone_(video_game)">Hearthstone</a> decks.
+If you are not familiar with Hearthstone, we suggest you watch for example this
+short Youtube video:</p>
 <p>Our system consists of three types of agents:</p>
-<ol class="arabic simple">
-<li><strong>CardCreatorAgents</strong> create new Hearthstone cards based on an inspiring set of existing cards.</li>
-<li><strong>GatekeeperAgents</strong> ensure that the created cards are <em>fair</em> (&#8220;valuable&#8221;) and <em>novel</em>. Fairness is evaluated using a regression model based on an inspiring set. Novelty is evaluated in terms of how similar the card is to other, previously seen cards.</li>
-<li><strong>DeckBuilderAgents</strong> build decks (sets of 30 cards) out of the cards accepted by GateKeeperAgents. At this point, their inner logic is very rudimentary, but we are working on a more complex deck builder. We would like different deck builders to value f.ex. aggressive or defensive cards.</li>
-</ol>
+<p>1. <strong>CardCreatorAgents</strong> create new Hearthstone cards based on an inspiring set
+of existing cards. These inspiring sets are transformed over time, as random
+elements from the sets are replaced by fair and novel generated cards.</p>
+<p>2. <strong>GatekeeperAgents</strong> ensure that the created cards are <em>fair</em> (&#8220;valuable&#8221;)
+and <em>novel</em>. Fairness is evaluated using a regression model based on an
+inspiring set. Novelty is evaluated in terms of how similar the card is to
+other, previously seen cards. For GatekeeperAgents, the inspiring set stays
+static, but they record previously seen generated cards in a mutable and limited
+memory.</p>
+<p>3. <strong>DeckBuilderAgents</strong> build decks (sets of 30 cards) out of the cards
+accepted by GateKeeperAgents. At this point, their inner logic is very
+rudimentary, but we are working on a more complex deck builder. We would like
+different deck builders to value f.ex. aggressive or defensive cards.</p>
+<p>We decided upon this three-tiered system in order to create a more social
+multiagent system, where agents need to co-operate to achieve their goals.</p>
+<p>While a two-tier system could have been employed instead of our current system,
+such two-tiered systems would make it more difficult to have different sized
+inspiring sets for different steps of the creative process. For example in our
+system the Gatekeepers have an inspiring sets that are double the size of the
+sets used by CardCreatorAgents. Similarly, Gatekeeper inspiring sets are static
+&#8211; with a distinct mutable memory &#8211; whereas CardCreatorAgents mutate their
+memory of their inspiring sets.</p>
 </div>
 <div class="section" id="fair-cards">
 <h1><a class="toc-backref" href="#id2">Fair Cards</a><a class="headerlink" href="#fair-cards" title="Permalink to this headline">¶</a></h1>
-<p>The fairness of a Hearthstone card is not an easy subject: even the makers of the game have made some questionable decisions. As mentioned above, we use a regression model to ensure that the cards are fair. The following is a more detailed explanation of this model: We construct from real Heathstone cards a traning set, where the features are the known card mechanics and the card <em>stats</em> such as health and attack values. We then use ridge regression to fit a regression model that outputs the mana cost for a card given all the other features of that card as input. The idea here is simple: existing cards should be approximately fair, so their mana cost should approximate the combined &#8220;value&#8221; of their features. We can then use the coefficients learned from fitting this model to evaluate new, previously unseen cards. Such a previously unseen card can then be considered &#8220;fair&#8221; if its evaluated mana cost is within a reasonable range of the actual mana cost.</p>
+<p>The fairness of a Hearthstone card is not an easy subject: even the makers of
+the game have made some questionable decisions. As mentioned above, we use a
+regression model to ensure that the cards are fair.</p>
+<p>The following is a more
+detailed explanation of this model: We construct from real Heathstone cards a
+training set, where the features are the known card mechanics and the card
+<em>stats</em> such as health and attack values. We then use ridge regression to fit a
+regression model that outputs the mana cost for a card given all the other
+features of that card as input. The idea here is simple: existing cards should
+be approximately fair, so their mana cost should approximate the combined
+&#8220;value&#8221; of their features. We can then use the coefficients learned from fitting
+this model to evaluate new, previously unseen cards. Such a previously unseen
+card can then be considered &#8220;fair&#8221; if its evaluated mana cost is within a
+reasonable range of the actual mana cost.</p>
 </div>
 <div class="section" id="project-structure">
 <h1><a class="toc-backref" href="#id3">Project structure</a><a class="headerlink" href="#project-structure" title="Permalink to this headline">¶</a></h1>
-<p>The project is built on top of the [Django web framework](<a class="reference external" href="https://www.djangoproject.com/">https://www.djangoproject.com/</a>). This allows us to use web pages as a user interface. Still, the project is not designed to be exposed to a larger audience as the computations are quite heavy: in other words, it&#8217;s an <em>intranet-only web service</em>.</p>
+<p>The project is built on top of the <a class="reference external" href="https://www.djangoproject.com/">Django web framework</a>.
+This allows us to use web pages as a user interface. Still, the project is not
+designed to be exposed to a larger audience as the computations are quite heavy:
+in other words, it&#8217;s an <em>intranet-only web service</em>.</p>
 <p>The high-level structure is as follows</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>. # Project root
 ├── app
@@ -80,15 +116,17 @@
 │   │   ├── apps.py  # General configuration
 │   │   ├── lib
 │   │   │   ├── agents
-│   │   │   │   ├── card_creator_agent.py # Creates cards
-│   │   │   │   ├── deck_creator_agent.py # Creates decks
-│   │   │   │   ├── environment.py        # Contains all live agents
-│   │   │   │   ├── evaluator.py          # Helper for evaluating the fairness of cards
-│   │   │   │   └── gatekeeper_agent.py   # Ensures card fairness and novelty
-│   │   │   ├── card_generator.py  # Helper for web UI
-│   │   │   ├── deck_generator.py  # Helper for web UI
-│   │   │   ├── importer.py        # Fetches real card data
-│   │   │   └── learner.py         # Regression model
+│   │   │   │   ├── card_creator_agent.py # Agent that creates cards
+│   │   │   │   ├── deck_creator_agent.py # Agent that creates decks
+│   │   │   │   ├── environment.py        # Environment agents live in
+│   │   │   │   ├── gatekeeper_agent.py   # Agent that evaluates cards
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── learning_utils.py
+│   │   │   │   └── limited_memory.py
+│   │   │   ├── importer.py      # For reading in data from the Mashape API
+│   │   │   ├── __init__.py
+│   │   │   ├── learner.py       # For learning card feature values
+│   │   │   └── view_helper.py   # Helper
 │   │   └── ...
 │   ├── db.sqlite3           # Database
 │   ├── heathstonedata.npy   # Cache for learning data
@@ -101,7 +139,11 @@
 </div>
 <div class="section" id="other-remarks">
 <h1><a class="toc-backref" href="#id4">Other remarks</a><a class="headerlink" href="#other-remarks" title="Permalink to this headline">¶</a></h1>
-<p>We chose not to go with any existing multi-agent system frameworks, as in our view they bring unnecessary complexities while not being of great help. Notably, even asynchronous multiagent system frameworks are largely unable to allow for any concrete speedup due to the [Python GIL](<a class="reference external" href="https://wiki.python.org/moin/GlobalInterpreterLock">https://wiki.python.org/moin/GlobalInterpreterLock</a>) only allowing one thread to execute at a time.</p>
+<p>We chose not to go with any existing multi-agent system frameworks, as in our
+view they bring unnecessary complexities while not being of great help. Notably,
+even asynchronous multiagent system frameworks are largely unable to allow for
+any concrete speedup due to the <a class="reference external" href="https://wiki.python.org/moin/GlobalInterpreterLock">Python GIL</a>
+only allowing one thread to execute at a time.</p>
 </div>
 <div class="section" id="installation">
 <h1><a class="toc-backref" href="#id5">Installation</a><a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
@@ -167,7 +209,10 @@ Password (again):
 Superuser created successfully.
 </pre></div>
 </div>
-<p>Modify line 6 of <cite>/cards/lib/importer.py</cite> so that the variable <cite>MASHAPE_KEY</cite> contains a valid API key to the API at <a class="reference external" href="https://market.mashape.com/omgvamp/hearthstone">https://market.mashape.com/omgvamp/hearthstone</a>. See project Moodle page in Univ. Helsinki Moodle for an API key that can be used for temporary and light-weight testing.</p>
+<p>Modify line 6 of <cite>/cards/lib/importer.py</cite> so that the variable <cite>MASHAPE_KEY</cite>
+contains a valid API key to the API at <a class="reference external" href="https://market.mashape.com/omgvamp/hearthstone">https://market.mashape.com/omgvamp/hearthstone</a>.
+See project Moodle page in Univ. Helsinki Moodle for an API key that can be used
+for temporary and light-weight testing.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">MASHAPE_KEY</span> <span class="o">=</span> <span class="s2">&quot;ADD_KEY_HERE&quot;</span>
 </pre></div>
 </div>
@@ -183,14 +228,21 @@ Quit the server with CONTROL-C.
 </pre></div>
 </div>
 <p>Browse to <a class="reference external" href="http://localhost:8000/admin/">http://localhost:8000/admin/</a> and log in</p>
-<p>Browse to <a class="reference external" href="http://localhost:8000/populate_db">http://localhost:8000/populate_db</a>. Wait for the program to populate the database from the API. You know the process is complete when you see a page with the text &#8220;Done!&#8221;.</p>
-<p><strong>NB:</strong> If you get a HTTP Error 403: Forbidden, you either skipped step 9 or provided an incorrect API key.</p>
-<p>Browse to <a class="reference external" href="http://localhost:8000/admin/cards/card/">http://localhost:8000/admin/cards/card/</a> and verify that the database got populated.</p>
+<p>Browse to <a class="reference external" href="http://localhost:8000/populate_db">http://localhost:8000/populate_db</a>. Wait for the program to populate
+the database from the API. You know the process is complete when you see a page
+with the text &#8220;Done!&#8221;.</p>
+<p><strong>NB:</strong> If you get a HTTP Error 403: Forbidden, you either skipped step 9 or
+provided an incorrect API key.</p>
+<p>Browse to <a class="reference external" href="http://localhost:8000/admin/cards/card/">http://localhost:8000/admin/cards/card/</a> and verify that the database
+got populated.</p>
 <p><strong>NB:</strong> The next step will take a long time, up to 15 minutes.</p>
 <p>Browse to <a class="reference external" href="http://localhost:8000/learn">http://localhost:8000/learn</a> and wait for the page to return &#8220;Done!&#8221;.</p>
-<p>You are done. You can browse to <a class="reference external" href="http://localhost:8000/create/card">http://localhost:8000/create/card</a> for a demo of the individual card creation, or to <a class="reference external" href="http://localhost:8000/create/deck">http://localhost:8000/create/deck</a> to try out the (Work-In-Progress) deck creator.</p>
+<p>You are done. You can browse to <a class="reference external" href="http://localhost:8000/create/card">http://localhost:8000/create/card</a> for a demo of
+the individual card creation, or to <a class="reference external" href="http://localhost:8000/create/deck">http://localhost:8000/create/deck</a> to try out
+the (Work-In-Progress) deck creator.</p>
 <p># Running the system</p>
-<p>On subsequent times, it is enough to start the server using <cite>python manage.py runserver</cite>, and then browsing to <a class="reference external" href="http://localhost:8000">http://localhost:8000</a></p>
+<p>On subsequent times, it is enough to start the server using <cite>python manage.py runserver</cite>,
+and then browsing to <a class="reference external" href="http://localhost:8000">http://localhost:8000</a></p>
 </div>
 <div class="section" id="code-documentation">
 <h1><a class="toc-backref" href="#id6">Code documentation</a><a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h1>
