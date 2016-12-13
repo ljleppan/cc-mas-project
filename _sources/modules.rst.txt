@@ -1,7 +1,7 @@
-app
-===
+Code documentation
+------------------
 
 .. toctree::
    :maxdepth: 4
 
-   cards
+   cards.lib.agents
