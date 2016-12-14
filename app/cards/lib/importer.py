@@ -3,7 +3,7 @@ import json
 import re
 from cards.models import *
 
-MASHAPE_KEY = "ADD_KEY_HERE"
+MASHAPE_KEY = "4P9eEsXxQGmshfNgPTEuEAU09Hgfp17ATf1jsntf4ZGlGq16zD"
 
 def import_cards():
     for card_type in ["Minion", "Spell", "Weapon"]:

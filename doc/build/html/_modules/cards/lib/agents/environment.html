@@ -47,7 +47,7 @@
 
 <span class="kn">from</span> <span class="nn">cards.lib.agents.card_creator_agent</span> <span class="k">import</span> <span class="n">CardCreatorAgent</span>
 <span class="kn">from</span> <span class="nn">cards.lib.agents.gatekeeper_agent</span> <span class="k">import</span> <span class="n">Gatekeeper</span>
-<span class="kn">from</span> <span class="nn">cards.lib.agents.deck_creator_agent</span> <span class="k">import</span> <span class="n">DeckCreatorAgent</span>
+<span class="kn">from</span> <span class="nn">cards.lib.agents.deck_creator_agent</span> <span class="k">import</span> <span class="n">DeckCreatorAgent</span><span class="p">,</span> <span class="n">DefaultEvaluator</span><span class="p">,</span> <span class="n">OffensiveEvaluator</span><span class="p">,</span> <span class="n">DefensiveEvaluator</span>
 
 <div class="viewcode-block" id="Environment"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.environment.Environment">[docs]</a><span class="k">class</span> <span class="nc">Environment</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -55,20 +55,27 @@
 <span class="sd">    cards.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Environment.__init__"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.environment.Environment.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_card_creators</span><span class="p">,</span> <span class="n">n_gatekeepers</span><span class="p">,</span> <span class="n">n_deck_creators</span><span class="p">):</span>
+<div class="viewcode-block" id="Environment.__init__"><a class="viewcode-back" href="../../../../cards.lib.agents.html#cards.lib.agents.environment.Environment.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_card_creators</span><span class="p">,</span> <span class="n">n_gatekeepers</span><span class="p">,</span> <span class="n">deck_creator_styles</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new :class:`.Environment` containing a set of agents.</span>
 
 <span class="sd">        :param n_card_creators: Number of :class:`.CardCreatorAgent` each :class:`.Gatekeeper` is associated with.</span>
 <span class="sd">        :param n_gatekeepers: Number of :class:`.Gatekeeper` each :class:`.DeckCreatorAgent` is associated with.</span>
-<span class="sd">        :param n_deck_creators: Number of :class:`.DeckCreatorAgent` in this :class:`.Environment`.</span>
+<span class="sd">        :param deck_creator_styles: Styles of :class:`.DeckCreatorAgent` instances in this :class:`.Environment`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_card_creators</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gatekeepers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_deck_creators</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_deck_creators</span><span class="p">):</span>
+        <span class="n">deck_creator_evaluators</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="kc">None</span><span class="p">:</span> <span class="n">DefaultEvaluator</span><span class="p">(),</span>
+            <span class="s2">&quot;standard&quot;</span><span class="p">:</span> <span class="n">DefaultEvaluator</span><span class="p">(),</span>
+            <span class="s2">&quot;offensive&quot;</span><span class="p">:</span> <span class="n">OffensiveEvaluator</span><span class="p">(),</span>
+            <span class="s2">&quot;defensive&quot;</span><span class="p">:</span> <span class="n">DefensiveEvaluator</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">style</span> <span class="ow">in</span> <span class="n">deck_creator_styles</span><span class="p">:</span>
             <span class="n">gatekeepers</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_gatekeepers</span><span class="p">):</span>
                 <span class="n">card_creators</span> <span class="o">=</span> <span class="p">[</span><span class="n">CardCreatorAgent</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_card_creators</span><span class="p">)]</span>
@@ -76,7 +83,7 @@
                 <span class="n">gatekeeper</span> <span class="o">=</span> <span class="n">Gatekeeper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">card_creators</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
                 <span class="n">gatekeepers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gatekeeper</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_gatekeepers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gatekeeper</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_deck_creators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DeckCreatorAgent</span><span class="p">(</span><span class="n">gatekeepers</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deck_creators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DeckCreatorAgent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gatekeepers</span><span class="p">,</span> <span class="n">deck_creator_evaluators</span><span class="p">[</span><span class="n">style</span><span class="p">]))</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">card_creators</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

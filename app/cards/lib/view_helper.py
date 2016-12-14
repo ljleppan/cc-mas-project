@@ -10,5 +10,7 @@ def generate_card(mana):
 
 
 def generate_deck(style):
-    env = Environment(5, 3, 1)
-    return env.step()
+    env = Environment(10, 5, [style])
+    deck = env.step()
+    print("Created {} deck".format(style))
+    return deck

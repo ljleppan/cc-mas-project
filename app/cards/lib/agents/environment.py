@@ -2,7 +2,7 @@ from random import choice
 
 from cards.lib.agents.card_creator_agent import CardCreatorAgent
 from cards.lib.agents.gatekeeper_agent import Gatekeeper
-from cards.lib.agents.deck_creator_agent import DeckCreatorAgent
+from cards.lib.agents.deck_creator_agent import DeckCreatorAgent, DefaultEvaluator, OffensiveEvaluator, DefensiveEvaluator
 
 class Environment:
     """
@@ -10,20 +10,27 @@ class Environment:
     cards.
     """
 
-    def __init__(self, n_card_creators, n_gatekeepers, n_deck_creators):
+    def __init__(self, n_card_creators, n_gatekeepers, deck_creator_styles):
         """
         Creates a new :class:`.Environment` containing a set of agents.
 
         :param n_card_creators: Number of :class:`.CardCreatorAgent` each :class:`.Gatekeeper` is associated with.
         :param n_gatekeepers: Number of :class:`.Gatekeeper` each :class:`.DeckCreatorAgent` is associated with.
-        :param n_deck_creators: Number of :class:`.DeckCreatorAgent` in this :class:`.Environment`.
+        :param deck_creator_styles: Styles of :class:`.DeckCreatorAgent` instances in this :class:`.Environment`.
         """
 
         self._card_creators = []
         self._gatekeepers = []
         self._deck_creators = []
 
-        for _ in range(n_deck_creators):
+        deck_creator_evaluators = {
+            None: DefaultEvaluator(),
+            "standard": DefaultEvaluator(),
+            "offensive": OffensiveEvaluator(),
+            "defensive": DefensiveEvaluator()
+        }
+
+        for style in deck_creator_styles:
             gatekeepers = []
             for _ in range(n_gatekeepers):
                 card_creators = [CardCreatorAgent() for _ in range(n_card_creators)]
@@ -31,7 +38,7 @@ class Environment:
                 gatekeeper = Gatekeeper(self, card_creators, 200)
                 gatekeepers.append(gatekeeper)
                 self._gatekeepers.append(gatekeeper)
-            self._deck_creators.append(DeckCreatorAgent(gatekeepers, None))
+            self._deck_creators.append(DeckCreatorAgent(self, gatekeepers, deck_creator_evaluators[style]))
 
     @property
     def card_creators(self):

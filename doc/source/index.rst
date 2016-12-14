@@ -7,8 +7,8 @@ Project overview
 
 Pure-RNG-Decks is a creative multiagent system that builds
 `Hearthstone <https://en.wikipedia.org/wiki/Hearthstone_(video_game)>`_ decks.
-If you are not familiar with Hearthstone, we suggest you watch for example this
-short Youtube video:
+If you are not familiar with Hearthstone, we suggest you watch the first half of
+this short Youtube tutorial: https://www.youtube.com/watch?v=x4LgYPmO5wE
 
 Our system consists of three types of agents:
 
