@@ -182,48 +182,47 @@ class CollaborativeEvaluator:
         mech_matrix.index = range(len(mech_matrix))
 
 
-    def sim_distance(self, mechs, card1, card2):
-    	#Get the list of shared_items
-    	si = {}
-    	for item in mechs[card1]:
-    		if item in mechs[card2]:
-    			si[item] = 1
+    def sim_distance(self, mechs, deck1, deck2):
+    	#Get the list of shared mechs
+    	similar = {}
+    	for item in mechs[deck1]:
+    		if item in mechs[deck2]:
+    			similar[item] = 1
 
-    	#if they have no rating in common, return 0
-    	if len(si) == 0:
+    	#if they have no mechanics in common, return 0.
+    	if len(similar) == 0:
     		return 0
 
     	#Add up the squares of all differences
-    	sum_of_squares = sum([pow(mechs[card1][item]-mechs[card2][item],2) for item in mechs[card1] if item in mechs[card2]])
+    	sum_of_squares = sum([pow(mechs[deck1][item]-mechs[deck2][item],2) \
+        for item in mechs[deck1] if item in mechs[deck2]])
 
     	return 1 / (1 + sum_of_squares)
 
 
-    #Returns the Pearson correlation coefficient for card1 and card2
-    def sim_pearson(self, mechs,card1,card2):
-    	#Get the list of mutually rated items
+    #Returns the Pearson correlation coefficient for deck1 and deck2
+    def sim_pearson(self, mechs,deck1,deck2):
+        # Find card mechanics that co-appear in decks
     	similar = {}
-    	for item in mechs[card1]:
-    		if item in mechs[card2]:
+    	for item in mechs[deck1]:
+    		if item in mechs[deck2]:
     			similar[item] = 1
 
-    	#if they are no rating in common, return 0
+    	#if  in common, return 0
     	if len(similar) == 0:
     		return 0
-
-    	#sum calculations
     	n = len(similar)
 
-    	#sum of all preferences
-    	sum1 = sum([mechs[card1][it] for it in similar])
-    	sum2 = sum([mechs[card2][it] for it in similar])
+    	#sum of all deck mechanic weights
+    	sum1 = sum([mechs[deck1][it] for it in similar])
+    	sum2 = sum([mechs[deck2][it] for it in similar])
 
     	#Sum of the squares
-    	sum1Sq = sum([pow(mechs[card1][it],2) for it in similar])
-    	sum2Sq = sum([pow(mechs[card2][it],2) for it in similar])
+    	sum1Sq = sum([pow(mechs[deck1][it],2) for it in similar])
+    	sum2Sq = sum([pow(mechs[deck2][it],2) for it in similar])
 
     	#Sum of the products
-    	pSum = sum([mechs[card1][it] * mechs[card2][it] for it in similar])
+    	pSum = sum([mechs[deck1][it] * mechs[deck2][it] for it in similar])
 
     	#Calculate r (Pearson score)
     	num = pSum - (sum1 * sum2/n)
@@ -245,7 +244,7 @@ class CollaborativeEvaluator:
 
 
     #Gets recommendations for a card by using a weighted average of cards in the pool.
-
+     """
     def getRecommendations(self,mechs,card):
     	totals = {}
     	simSums = {}
@@ -275,6 +274,7 @@ class CollaborativeEvaluator:
     	rankings.sort()
     	rankings.reverse()
     	return rankings
+    """
 
 
     #Function to transform card, item - > Item, card
