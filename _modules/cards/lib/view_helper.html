@@ -55,8 +55,10 @@
 
 
 <div class="viewcode-block" id="generate_deck"><a class="viewcode-back" href="../../../cards.lib.html#cards.lib.view_helper.generate_deck">[docs]</a><span class="k">def</span> <span class="nf">generate_deck</span><span class="p">(</span><span class="n">style</span><span class="p">):</span>
-    <span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">()</span></div>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="p">[</span><span class="n">style</span><span class="p">])</span>
+    <span class="n">deck</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Created </span><span class="si">{}</span><span class="s2"> deck&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">style</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">deck</span></div>
 </pre></div>
 
           </div>
