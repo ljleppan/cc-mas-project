@@ -122,15 +122,15 @@
 <span class="sd">        :return: `True` if card is fair, `False` otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;mana&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding card with &lt; 0 mana&quot;</span><span class="p">)</span>
+            <span class="c1">#print(&quot;Gatekeeper: Discarding card with &lt; 0 mana&quot;)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;attack&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding card with &lt; 0 attack&quot;</span><span class="p">)</span>
+            <span class="c1">#print(&quot;Gatekeeper: Discarding card with &lt; 0 attack&quot;)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;health&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding card with &lt; 1 attack&quot;</span><span class="p">)</span>
+            <span class="c1">#print(&quot;Gatekeeper: Discarding card with &lt; 1 attack&quot;)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">for</span> <span class="n">mech</span> <span class="ow">in</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;mechanics&#39;</span><span class="p">]:</span>
@@ -138,19 +138,19 @@
                 <span class="n">digits</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">r&#39;\d+&#39;</span><span class="p">,</span> <span class="n">mech</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
                 <span class="k">for</span> <span class="n">digit</span> <span class="ow">in</span> <span class="n">digits</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">digit</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding card with mechanic value &lt; 1&quot;</span><span class="p">)</span>
+                        <span class="c1">#print(&quot;Gatekeeper: Discarding card with mechanic value &lt; 1&quot;)</span>
                         <span class="k">return</span> <span class="kc">False</span>
 
         <span class="c1"># Remove cards with duplicate mechanics</span>
         <span class="n">mechanics</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;mechanics&#39;</span><span class="p">]]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mechanics</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">mechanics</span><span class="p">)):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding card with duplicate mechanics&quot;</span><span class="p">)</span>
+            <span class="c1">#print(&quot;Gatekeeper: Discarding card with duplicate mechanics&quot;)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="n">np_card</span> <span class="o">=</span> <span class="n">card_as_row</span><span class="p">(</span><span class="n">card</span><span class="p">)</span>
         <span class="n">evaluation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np_card</span><span class="p">)</span>
         <span class="n">value_delta</span> <span class="o">=</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;mana&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">evaluation</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: evaluated card as </span><span class="si">{}</span><span class="s2">. Delta: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">evaluation</span><span class="p">,</span> <span class="n">value_delta</span><span class="p">))</span>
+        <span class="c1">#print(&quot;Gatekeeper: evaluated card as {}. Delta: {}&quot;.format(evaluation, value_delta))</span>
         <span class="k">if</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">value_delta</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -181,7 +181,7 @@
         <span class="k">if</span> <span class="n">card</span><span class="p">[</span><span class="s1">&#39;mechanics&#39;</span><span class="p">]:</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">filtered</span><span class="p">:</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;mechanics&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;mechanics&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">card</span><span class="p">[</span><span class="s1">&#39;mechanics&#39;</span><span class="p">]))):</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Discarding duplicate card&quot;</span><span class="p">)</span>
+                    <span class="c1">#print(&quot;Gatekeeper: Discarding duplicate card&quot;)</span>
                     <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">return</span> <span class="kc">True</span></div>
@@ -194,6 +194,7 @@
 
 <span class="sd">        :param card: Card to memorize.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gatekeeper: Memorizing card and telling CardGenerators about it&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_memory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">card</span><span class="p">)</span>
         <span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">memoize</span><span class="p">(</span><span class="n">card</span><span class="p">)</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_card_generators</span><span class="p">)</span></div>
 

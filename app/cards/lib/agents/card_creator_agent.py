@@ -97,7 +97,7 @@ class CardCreatorAgent:
         """
         Generates a new card.
 
-        First, card mana is sampled from :math:`\\lfloor \\mathcal{N}(2.5, 1.5) \\rfloor`.
+        First, card mana is drawn randomly from range 0 to 10.
 
         :math:`n \\sim P(2)` mechanics are then drawn from the inspiring set,
         with values over 4 being trucanted to 4. If the mechanics have an
