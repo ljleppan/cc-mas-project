@@ -77,15 +77,15 @@ class Gatekeeper:
         :return: `True` if card is fair, `False` otherwise.
         """
         if card['mana'] < 0:
-            print("Gatekeeper: Discarding card with < 0 mana")
+            #print("Gatekeeper: Discarding card with < 0 mana")
             return False
 
         if card['attack'] < 0:
-            print("Gatekeeper: Discarding card with < 0 attack")
+            #print("Gatekeeper: Discarding card with < 0 attack")
             return False
 
         if card['health'] < 1:
-            print("Gatekeeper: Discarding card with < 1 attack")
+            #print("Gatekeeper: Discarding card with < 1 attack")
             return False
 
         for mech in card['mechanics']:
@@ -93,19 +93,19 @@ class Gatekeeper:
                 digits = [int(s) for s in re.findall(r'\d+', mech[0])]
                 for digit in digits:
                     if digit < 1:
-                        print("Gatekeeper: Discarding card with mechanic value < 1")
+                        #print("Gatekeeper: Discarding card with mechanic value < 1")
                         return False
 
         # Remove cards with duplicate mechanics
         mechanics = [x[1] for x in card['mechanics']]
         if len(mechanics) != len(set(mechanics)):
-            print("Gatekeeper: Discarding card with duplicate mechanics")
+            #print("Gatekeeper: Discarding card with duplicate mechanics")
             return False
 
         np_card = card_as_row(card)
         evaluation = self._model.predict(np_card)
         value_delta = card['mana'] - evaluation
-        print("Gatekeeper: evaluated card as {}. Delta: {}".format(evaluation, value_delta))
+        #print("Gatekeeper: evaluated card as {}. Delta: {}".format(evaluation, value_delta))
         if (abs(value_delta) > 1):
             return False
 
@@ -136,7 +136,7 @@ class Gatekeeper:
         if card['mechanics']:
             for k in filtered:
                 if (k['mechanics'] and (set(k['mechanics']) == set(card['mechanics']))):
-                    print("Gatekeeper: Discarding duplicate card")
+                    #print("Gatekeeper: Discarding duplicate card")
                     return False
 
         return True
@@ -149,6 +149,7 @@ class Gatekeeper:
 
         :param card: Card to memorize.
         """
+        print("Gatekeeper: Memorizing card and telling CardGenerators about it")
         self._memory.append(card)
         (agent.memoize(card) for agent in self._card_generators)
 

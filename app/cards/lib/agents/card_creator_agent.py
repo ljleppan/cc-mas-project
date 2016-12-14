@@ -123,7 +123,7 @@ class CardCreatorAgent:
         card = {}
         card_val = 0
 
-        card['mana'] = int(round(normal(2.5, 1.5)))
+        card['mana'] = int(10 * random())
 
         card_val += self._generate_mechanics(card)
         card_val += self._generate_health_and_attack(card, card["mana"] - card_val)
@@ -137,7 +137,7 @@ class CardCreatorAgent:
         self._set_random_image(card)
         card['type'] = "Minion"
 
-        print("CardCreator: Created card {}".format(card))
+        #print("CardCreator: Created card {}".format(card))
         return card
 
     def _set_random_image(self, card):
@@ -213,8 +213,8 @@ class CardCreatorAgent:
         #mana values for single attack and health points
         health_val = self.health_coeff
         attack_val = self.attack_coeff
-        print("health val: " + str(health_val))
-        print("attack val: " + str(attack_val))
+        #print("health val: " + str(health_val))
+        #print("attack val: " + str(attack_val))
 
         #random value between 0 and 1 using truncated normal distribution
         #with mean 0.5 and standard deviation 0.2
